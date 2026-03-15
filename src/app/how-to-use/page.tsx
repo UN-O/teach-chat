@@ -44,7 +44,7 @@ export default function HowToUsePage() {
               </div>
               <div className={i % 2 !== 0 ? "md:[direction:ltr]" : ""}>
                 <img
-                  src={`/images/how-to-use-step-${i + 1}.svg`}
+                  src={`/images/how-to-use-step-${i + 1}.jpeg`}
                   alt={`步驟 ${step.num}：${step.h3}`}
                   className="w-full h-auto object-contain mix-blend-multiply"
                 />
