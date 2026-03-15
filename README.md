@@ -6,11 +6,13 @@
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS + shadcn/ui
-- **AI**: Claude API (scenario simulation & message scoring)
-- **Testing**: Jest (unit) + Playwright (e2e, --chrome)
+- **Framework**: Next.js 16 + React 19 (App Router, TypeScript 5)
+- **Package manager**: pnpm
+- **Styling**: Tailwind CSS v4 + shadcn/ui (`neutral` base) + `lucide-react`
+- **Font**: Geist Sans / Geist Mono
+- **AI**: Vercel AI SDK (`ai` v6 + `@ai-sdk/react`) with Claude as provider
+- **HTTP / Data**: `ky` (fetch wrapper) + `swr` (client-side data fetching)
+- **Testing**: Jest + Playwright (`--chrome`) — to be configured
 
 ---
 

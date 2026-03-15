@@ -7,33 +7,42 @@ Architecture: Service-Oriented Architecture (SOA)
 
 # Tech Stack
 
-- **Framework**: Next.js 14 (App Router, TypeScript)
-- **Styling**: Tailwind CSS + shadcn/ui
-- **AI**: Claude API (`claude-sonnet-4-6`) via Anthropic SDK
-- **State**: Zustand (client-side game state)
-- **Testing**: Jest (unit/service) + Playwright (e2e, use `--chrome` flag)
+- **Framework**: Next.js 16 (App Router, TypeScript 5, React 19)
+- **Package manager**: pnpm
+- **Styling**: Tailwind CSS v4 + shadcn/ui (`neutral` base, `lucide-react` icons)
+- **Font**: Geist Sans + Geist Mono (via `geist` package)
+- **AI**: Vercel AI SDK (`ai` v6 + `@ai-sdk/react`) — use `useChat` / `streamText` patterns
+- **HTTP**: `ky` for fetch wrapper (`src/lib/fetch.ts`); `swr` for client-side data fetching
+- **Utilities**: `clsx` + `tailwind-merge` via `cn()` helper (`src/lib/utils.ts`); `class-variance-authority` for component variants
+- **Testing**: not configured yet — add Jest + Playwright (`--chrome`) in the setup task
 - **Deployment**: Vercel
 
 ---
 
 # Folder Structure
 
+Current state: `src/app/`, `src/components/ui/`, `src/hooks/`, `src/lib/` exist. Still to add: `services/`, `data/`, `types/`.
+
 ```
 src/
 ├── app/                    # Next.js App Router pages
 │   ├── (marketing)/        # home, about, technique, blog, how-to-use
+│   ├── api/                # Route handlers (AI stream endpoints)
 │   └── scenario/
 │       └── [name]/
 │           └── [uuid]/     # intro, chatlist, chat, phase*/sectionclose, final
 ├── services/               # SOA service layer (pure functions / classes)
 │   ├── ScenarioService.ts  # scenario data & parent persona prompts
 │   ├── ScoringService.ts   # rubric evaluation (T01–T14)
-│   └── PolishService.ts    # message rewriting via Claude API
+│   └── PolishService.ts    # message rewriting via AI SDK
 ├── components/             # Shared UI components
-│   ├── ui/                 # shadcn/ui primitives
+│   ├── ui/                 # shadcn/ui primitives (added via `pnpm dlx shadcn add`)
 │   └── game/               # scenario-specific components
-├── lib/                    # Utilities (claude client, helpers)
-├── data/                   # Static scenario JSON/TS data files
+├── hooks/                  # Custom React hooks
+├── lib/
+│   ├── utils.ts            # cn() helper (clsx + tailwind-merge)
+│   └── fetch.ts            # ky-based fetcher for swr
+├── data/                   # Static scenario TS data files
 └── types/                  # Shared TypeScript interfaces
 ```
 
@@ -41,11 +50,13 @@ src/
 
 # Style Guidelines
 
-- **Color palette**: Warm tones — amber, rose, warm-gray. Avoid cold blues/greens.
-- **Typography**: Use `Noto Sans TC` for Chinese; `Inter` for Latin.
+- **Color palette**: Warm tones — amber, rose, warm-gray (shadcn `neutral` base). Avoid cold blues/greens.
+- **Typography**: Geist Sans is the primary font (already configured in layout). Add `Noto Sans TC` via `next/font/google` for Chinese body text.
+- **CSS**: Tailwind v4 uses `@import "tailwindcss"` (not `@tailwind base/components/utilities`). CSS variables are defined in `globals.css` using `oklch()`.
+- **Component variants**: Use `class-variance-authority` (cva) for multi-variant components.
 - **Mobile-first**: Design for 375px viewport first; desktop is enhancement.
 - **Tone**: Empathetic, encouraging — never clinical or alarming.
-- **UI language**: Chinese (Traditional, zh-TW).
+- **UI language**: Chinese (Traditional, zh-TW); set `lang="zh-TW"` on `<html>`.
 
 ---
 
@@ -53,7 +64,9 @@ src/
 
 - Each service lives in `src/services/` and is responsible for one domain.
 - Services must NOT import from `app/` or `components/`.
-- API calls to Claude must go through `src/lib/claudeClient.ts` only — never call the Anthropic SDK directly in components or pages.
+- AI calls use the Vercel AI SDK (`ai` + `@ai-sdk/react`). Streaming responses go through `app/api/` route handlers; services build the prompts and config, routes call `streamText`.
+- Client components use `useChat` (from `@ai-sdk/react`) pointing at those route handlers.
+- Data fetching in client components: use `swr` with the `fetcher` from `src/lib/fetch.ts`.
 - Services should be independently testable (pure inputs/outputs where possible).
 
 ---
@@ -84,11 +97,14 @@ src/
 # Environment Variables
 
 ```
-ANTHROPIC_API_KEY=          # Claude API key
+# .env.local (never commit)
+ANTHROPIC_API_KEY=          # Claude API key — used by Vercel AI SDK on the server
 NEXT_PUBLIC_APP_URL=        # e.g. https://teach-chat.vercel.app
 ```
 
-Never commit `.env.local`. Add all new vars to `.env.example` when introducing them.
+- Install packages with `pnpm add` / `pnpm add -D`.
+- Add shadcn components with `pnpm dlx shadcn add <component>`.
+- Never commit `.env.local`. Add all new vars to `.env.example` when introducing them.
 
 ---
 
