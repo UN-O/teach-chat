@@ -9,7 +9,7 @@ export function OriginSection() {
           <div>
             <img
               src="/images/origin-team.webp"
-              alt="AI創新教育工學圈圈團隊合照"
+              alt="AI創新教育共學圈圈團隊合照"
               className="w-full h-auto object-contain mix-blend-multiply rounded-xl"
             />
           </div>

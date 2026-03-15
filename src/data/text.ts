@@ -15,7 +15,7 @@ export const navText = {
   about: "關於我們",
   startPractice: "開始練習",
   footerTagline: "新手老師最安全的溝通練習場",
-  footerCopyright: "© 2025 AI創新教育工學圈圈團隊。保留所有權利。",
+  footerCopyright: "© 2025 AI創新教育共學圈圈團隊。保留所有權利。",
 } as const;
 
 export const homeText = {
@@ -34,7 +34,7 @@ export const homeText = {
       h2: "怎麼辦？親師溝通情境演練",
       body: "「叮咚！」螢幕那頭的訊息，是不是又讓你的心跳漏了一拍？真實的教育現場劇本，讓你先在這裡練習，造就在現實中的完美過關。",
       ctaFight: "情境一：同學們起衝突，怎麼跟家長說？",
-      ctaDisorder: "情境二：學生表現失常，與家長確認？",
+      ctaDisorder: "情境二：學生表現失常，聯絡家長？",
       ctaMore: "探索更多真實挑戰",
     },
     polish: {
@@ -67,7 +67,7 @@ export const homeText = {
     eyebrow: "Contact Us",
     h2: "讓我們一起共創價值",
     body: "遇到問題？或是想敲碗新劇本？隨時告訴我們。",
-    email: "contact@teachchat.tw",
+    email: "outegralstudio@gmail.com",
     ctaForm: "點此填寫問題回報與建議",
   },
 } as const;
@@ -132,7 +132,7 @@ export const techniqueText = {
 export const aboutText = {
   eyebrow: "About Us",
   h1: "關於我們",
-  teamName: "AI創新教育工學圈圈團隊",
+  teamName: "AI創新教育共學圈圈團隊",
   intro:
     "我們是一群關心教育生態的夥伴。就像學校裡的「共備社群」一樣，我們希望透過科技，成為全台新手教師最堅實的後盾。這次，我們帶著《老師怎麼辦...? [親師溝通篇]》參與親子天下比賽，希望能推動更友善的親師關係，讓更多在教育前線奮鬥的老師們看見：你們並不孤單。",
   futurePlans: {

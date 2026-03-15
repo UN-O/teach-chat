@@ -49,13 +49,13 @@ export default async function TechniqueDetailPage({ params }: TechniqueDetailPag
     }
 
     return (
-        <section className="px-6 md:px-16 py-20 bg-background grid gap-5">
+        <section className="p-0 pt-5 md:px-16 md:py-20 bg-background grid gap-5 overflow-x-hidden">
             <div className="max-w-4xl mx-auto w-full">
                 <Button asChild variant="secondary" size="sm" className="w-fit normal-case tracking-normal">
                     <Link href="/technique">← 回交戰手冊</Link>
                 </Button>
             </div>
-            <article className="max-w-4xl mx-auto bg-white rounded-xl p-8 md:p-12 shadow-soft space-y-8 animate-editorial-in">
+            <article className="max-w-4xl mx-auto bg-white rounded-xl p-8 md:p-12 shadow-soft space-y-8 animate-editorial-in pb-40">
                 <header className="space-y-4 pb-6 border-b border-muted/20">
                     <Eyebrow className="text-secondary">{technique.eyebrow}</Eyebrow>
                     <H1 className="text-primary">{technique.title}</H1>

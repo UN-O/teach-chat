@@ -31,7 +31,7 @@
 | `public/images/hook-phone.svg` | 800 × 600px | 插畫（SVG 優先）| 老師手握手機，螢幕跳出家長長篇大論的 LINE 訊息，老師頭痛扶額的情境照 | HookSection 情境練習區塊左側 |
 | `public/images/feature-chat.svg` | 800 × 500px | 截圖（系統完成後替換）| 情境訓練功能截圖（包含聊天對答與情緒分數雷達圖），需等聊天室系統完成後截圖 | HookSection 功能卡片、IntroSection 功能卡 |
 | `public/images/feature-polish.svg` | 800 × 500px | 截圖（系統完成後替換）| 訊息潤飾功能截圖 Before/After 對比，左側原始草稿，右側 AI 建議回覆 | HookSection 訊息潤飾區塊、IntroSection 功能卡 |
-| `public/images/origin-team.svg` | 800 × 500px | 攝影 | 團隊溫馨合照或工作照（AI創新教育工學圈圈團隊），風格溫暖，去背或白底均可 | OriginSection 左側 |
+| `public/images/origin-team.svg` | 800 × 500px | 攝影 | 團隊溫馨合照或工作照（AI創新教育共學圈圈團隊），風格溫暖，去背或白底均可 | OriginSection 左側 |
 
 ---
 

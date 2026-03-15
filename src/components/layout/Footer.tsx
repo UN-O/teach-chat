@@ -51,10 +51,10 @@ export function Footer() {
             {navText.footerCopyright}
           </p>
           <a
-            href="mailto:contact@teachchat.tw"
+            href="mailto:outegralstudio@gmail.com"
             className="font-en text-xs text-white/50 hover:text-white transition-colors duration-200"
           >
-            contact@teachchat.tw
+            outegralstudio@gmail.com
           </a>
         </div>
       </div>

@@ -14,7 +14,7 @@ export function HookSection() {
                         <img
                             src="/images/hook-phone.svg"
                             alt="老師手握手機，家長 LINE 訊息涌現"
-                            className="w-full h-auto max-h-[300px] md:max-h-[440px] object-contain  mx-auto"
+                            className="w-full h-auto max-h-75 md:max-h-110 object-contain mx-auto"
                         />
                     </div>
                     <div className="order-1 md:order-2 w-full md:rounded-none">
@@ -30,21 +30,42 @@ export function HookSection() {
                             </p>
                             <div className="rounded-xl bg-white">
                                 <div className="flex flex-col gap-3">
-                                    <Button variant="accent" size="lg" className="w-full justify-between" asChild>
+                                    <Button
+                                        variant="accent"
+                                        size="lg"
+                                        className="h-auto min-h-13 w-full justify-between py-3"
+                                        asChild
+                                    >
                                         <Link href="/scenario/studentfeud">
-                                            <span>{homeText.hook.scenario.ctaFight}</span>
+                                            <span className="flex-1 text-left whitespace-normal leading-[1.4]">
+                                                {homeText.hook.scenario.ctaFight}
+                                            </span>
                                             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         </Link>
                                     </Button>
-                                    <Button variant="deep" size="lg" className="w-full justify-between" asChild>
+                                    <Button
+                                        variant="deep"
+                                        size="lg"
+                                        className="h-auto min-h-13 w-full justify-between py-3"
+                                        asChild
+                                    >
                                         <Link href="/scenario/disorder">
-                                            <span>{homeText.hook.scenario.ctaDisorder}</span>
+                                            <span className="flex-1 text-left whitespace-normal leading-[1.4]">
+                                                {homeText.hook.scenario.ctaDisorder}
+                                            </span>
                                             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         </Link>
                                     </Button>
-                                    <Button variant="ghost" size="lg" className="w-full justify-between" asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="lg"
+                                        className="h-auto min-h-13 w-full justify-between py-3"
+                                        asChild
+                                    >
                                         <Link href="/scenario">
-                                            <span>{homeText.hook.scenario.ctaMore}</span>
+                                            <span className="flex-1 text-left whitespace-normal leading-[1.4]">
+                                                {homeText.hook.scenario.ctaMore}
+                                            </span>
                                             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
                                         </Link>
                                     </Button>
@@ -64,7 +85,7 @@ export function HookSection() {
                         <img
                             src="/images/feature-polish.svg"
                             alt="訊息潤飾 Before/After 對比示意"
-                            className="w-full h-auto max-h-[300px] md:max-h-[440px] object-contain  mx-auto"
+                            className="w-full h-auto max-h-75 md:max-h-110 object-contain mx-auto"
                         />
                     </div>
                     <div className="order-1 md:order-2 w-full md:rounded-none">
@@ -79,9 +100,11 @@ export function HookSection() {
                             {homeText.hook.polish.body}
                         </p>
                             <div className="rounded-xl bg-white">
-                                <Button size="lg" className="w-full justify-between" asChild>
+                                <Button size="lg" className="h-auto min-h-13 w-full justify-between py-3" asChild>
                                     <Link href="/polishtext">
-                                        <span>{homeText.hook.polish.cta}</span>
+                                        <span className="flex-1 text-left whitespace-normal leading-[1.4]">
+                                            {homeText.hook.polish.cta}
+                                        </span>
                                         <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
                                     </Link>
                                 </Button>
