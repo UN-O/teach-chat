@@ -161,12 +161,12 @@ export default function RootLayout({ children }) {
 
 | 層級 | 字體 | 尺寸 | 字重 | 行距 | Tailwind Class |
 |------|------|------|------|------|---------------|
-| Display / H1 | Chiron GoRound TC | 64–96px | 700 | 1.1 | `font-[var(--font-display)] text-7xl font-bold leading-[1.1]` |
-| H2 | Chiron GoRound TC | 40–48px | 700 | 1.15 | `font-[var(--font-display)] text-5xl font-bold leading-[1.15]` |
-| H3 | Chiron GoRound TC | 28–32px | 500 | 1.25 | `font-[var(--font-display)] text-3xl font-medium leading-snug` |
-| Label / Eyebrow | DM Sans | 12px | 500 | — | `font-[var(--font-en)] text-xs font-medium tracking-widest uppercase` |
-| Body | Noto Sans TC | 16–18px | 400 | 1.7 | `font-[var(--font-body)] text-base leading-[1.7]` |
-| Caption | Noto Sans TC | 13px | 400 | 1.6 | `font-[var(--font-body)] text-sm text-[var(--color-muted)]` |
+| Display / H1 | Chiron GoRound TC | 64–96px | 700 | 1.1 | `font-display text-7xl font-bold leading-[1.1]` |
+| H2 | Chiron GoRound TC | 40–48px | 700 | 1.15 | `font-display text-5xl font-bold leading-[1.15]` |
+| H3 | Chiron GoRound TC | 28–32px | 500 | 1.25 | `font-display text-3xl font-medium leading-snug` |
+| Label / Eyebrow | DM Sans | 12px | 500 | — | `font-en text-xs font-medium tracking-widest uppercase` |
+| Body | Noto Sans TC | 16–18px | 400 | 1.7 | `font-body text-base leading-[1.7]` |
+| Caption | Noto Sans TC | 13px | 400 | 1.6 | `font-body text-sm text-muted` |
 
 > **行距微調說明**：Chiron GoRound TC 字形較圓潤飽滿，H1 行距建議用 `1.1`（而非原本的 `1.05`），避免行與行之間太過緊密壓迫。
 
@@ -178,17 +178,17 @@ export default function RootLayout({ children }) {
 {/* Editorial 標題組合 */}
 <div>
   {/* Eyebrow：DM Sans，乾淨英文質感 */}
-  <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-secondary)] mb-4">
+  <p className="font-en text-xs font-medium tracking-widest uppercase text-secondary mb-4">
     Feature Story
   </p>
 
   {/* H1：Chiron GoRound TC，圓潤大字 */}
-  <h1 className="font-[var(--font-display)] text-7xl font-bold leading-[1.1] text-[var(--color-primary)]">
+  <h1 className="font-display text-7xl font-bold leading-[1.1] text-primary">
     設計是<br />一種閱讀
   </h1>
 
   {/* Body：Noto Sans TC，穩定舒適 */}
-  <p className="font-[var(--font-body)] mt-6 text-base leading-[1.7] text-[var(--color-primary)] max-w-[65ch]">
+  <p className="font-body mt-6 text-base leading-[1.7] text-primary max-w-[65ch]">
     Editorial UI 讓每個畫面都像雜誌的一頁，排版即設計，留白即敘事。
   </p>
 </div>
@@ -197,10 +197,10 @@ export default function RootLayout({ children }) {
 ```tsx
 {/* H3 + Body 的卡片內層排版 */}
 <div className="space-y-3">
-  <h3 className="font-[var(--font-display)] text-2xl font-medium leading-snug text-[var(--color-primary)]">
+  <h3 className="font-display text-2xl font-medium leading-snug text-primary">
     排版即設計
   </h3>
-  <p className="font-[var(--font-body)] text-sm leading-[1.7] text-[var(--color-primary)] opacity-70">
+  <p className="font-body text-sm leading-[1.7] text-primary/70">
     每個留白都是敘事的節奏，每個字重都是視覺的層次。
   </p>
 </div>
@@ -220,17 +220,26 @@ export default function RootLayout({ children }) {
 
 ## 3. Color
 
+Tailwind v4 將 `@theme` 中的 `--color-*` 自動對應為 utility class（去掉 `--color-` 前綴）。**一律使用短 token，不要寫 `[var(--color-NAME)]`**：
+
 ```tsx
-// Tailwind v4 直接使用 CSS variable
-<div className="bg-[var(--color-background)]">
-  <p className="text-[var(--color-primary)]">主文字</p>
-  <p className="text-[var(--color-secondary)]">次文字（深藍）</p>
-  <span className="text-[var(--color-muted)]">輔助文字</span>
-  <button className="border border-[var(--color-primary)] text-[var(--color-accent)]">
+// ✅ 正確：使用短 token
+<div className="bg-background">
+  <p className="text-primary">主文字</p>
+  <p className="text-secondary">次文字（深藍）</p>
+  <span className="text-muted">輔助文字</span>
+  <button className="border border-primary text-accent">
     Accent Button
   </button>
 </div>
+
+// ❌ 錯誤：不需要這樣寫
+<div className="bg-[var(--color-background)]">
+  <p className="text-[var(--color-primary)]">主文字</p>
+</div>
 ```
+
+opacity modifier 同樣適用：`text-primary/80`、`text-primary/70`、`border-muted/20`
 
 **色彩使用原則：**
 - 背景永遠是 `#B6D0E2` 或 `#FFFFFF`（依 section 交替）
@@ -246,7 +255,7 @@ export default function RootLayout({ children }) {
 
 ```tsx
 // 標準 Section 模板
-<section className="px-6 md:px-16 py-24 bg-[var(--color-background)]">
+<section className="px-6 md:px-16 py-24 bg-background">
   <div className="max-w-6xl mx-auto">
     {/* 非對稱排版：文字左 + 插畫右 */}
     <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-16 items-center">
@@ -268,7 +277,7 @@ export default function RootLayout({ children }) {
 
 ```tsx
 // 分隔線：極細、低對比、少用
-<hr className="border-t border-[var(--color-muted)] opacity-40 my-12" />
+<hr className="border-t border-muted opacity-40 my-12" />
 ```
 
 ---
@@ -281,27 +290,23 @@ export default function RootLayout({ children }) {
 
 | 等級 | 用途 | Tailwind Class |
 |------|------|---------------|
-| `shadow-soft` | 卡片、input、次要區塊 | `shadow-[0_2px_8px_0_rgba(0,0,0,0.06)]` |
-| `shadow-md` | hover 狀態、浮起元件 | `shadow-[0_4px_16px_0_rgba(0,0,0,0.10)]` |
-| `shadow-lifted` | Modal、Dropdown、置頂元件 | `shadow-[0_8px_24px_0_rgba(0,0,0,0.12)]` |
+| `shadow-soft` | 卡片、input、次要區塊 | `shadow-soft` |
+| `shadow-md` | hover 狀態、浮起元件 | `shadow-md` |
+| `shadow-lifted` | Modal、Dropdown、置頂元件 | `shadow-lifted` |
 
 ```tsx
-{/* Soft Card — 純色塊 + rounded-md + 柔和陰影 */}
-<div className="bg-white rounded-md shadow-[0_2px_8px_0_rgba(0,0,0,0.06)] p-6">
+{/* Soft Card — 純色塊 + rounded-xl + 柔和陰影 */}
+<div className="bg-white rounded-xl shadow-soft p-6">
   內容
 </div>
 
 {/* Hover 時提升陰影，給予反饋 */}
-<div className="bg-white rounded-md
-                shadow-[0_2px_8px_0_rgba(0,0,0,0.06)]
-                hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.10)]
-                transition-shadow duration-200 p-6">
+<div className="bg-white rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200 p-6">
   互動卡片
 </div>
 
-{/* 深色背景卡片用更淺陰影 */}
-<div className="bg-[var(--color-secondary)] text-white rounded-md
-                shadow-[0_4px_16px_0_rgba(0,0,0,0.20)] p-6">
+{/* 深色背景卡片 */}
+<div className="bg-secondary text-white rounded-xl shadow-md p-6">
   深色卡片
 </div>
 ```
@@ -359,7 +364,7 @@ const buttonVariants = cva(
   // base：字體用 font-en（DM Sans）、rounded-lg 配合圓潤風格
   [
     "inline-flex items-center justify-center",
-    "font-[var(--font-en)] text-sm font-medium tracking-wider uppercase",
+    "font-en text-sm font-medium tracking-wider uppercase",
     "rounded-lg transition-all duration-200",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
     "disabled:pointer-events-none disabled:opacity-50",
@@ -471,43 +476,43 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 {/* ── 標準淺色卡片 ── */}
-<div className="bg-white rounded-xl p-8 space-y-3 shadow-[0_2px_8px_0_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200">
+<div className="bg-white rounded-xl p-8 space-y-3 shadow-soft hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
   {/* Eyebrow：分類標籤，無 icon */}
-  <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-muted)]">
+  <p className="font-en text-xs font-medium tracking-widest uppercase text-muted">
     Research · 2025
   </p>
   {/* Title */}
-  <h3 className="font-[var(--font-display)] text-xl font-bold leading-snug text-[var(--color-primary)]">
+  <h3 className="font-display text-xl font-bold leading-snug text-primary">
     排版即設計
   </h3>
   {/* Body */}
-  <p className="font-[var(--font-body)] text-sm leading-[1.7] text-[var(--color-primary)]/70">
+  <p className="font-body text-sm leading-[1.7] text-primary/70">
     字體層級的每一個決定，都是在告訴讀者什麼重要、什麼次要。
   </p>
 </div>
 
 {/* ── 深色卡片 ── */}
-<div className="bg-[var(--color-secondary)] rounded-xl p-8 space-y-3 shadow-[0_4px_16px_0_rgba(0,0,0,0.12)]">
-  <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-white/50">
+<div className="bg-secondary rounded-xl p-8 space-y-3 shadow-md">
+  <p className="font-en text-xs font-medium tracking-widest uppercase text-white/50">
     Feature
   </p>
-  <h3 className="font-[var(--font-display)] text-xl font-bold leading-snug text-white">
+  <h3 className="font-display text-xl font-bold leading-snug text-white">
     留白即敘事
   </h3>
-  <p className="font-[var(--font-body)] text-sm leading-[1.7] text-white/70">
+  <p className="font-body text-sm leading-[1.7] text-white/70">
     留白不是空白，是節奏、是呼吸、是讓內容說話的空間。
   </p>
 </div>
 
 {/* ── 帶 CTA 的卡片 ── */}
-<div className="bg-white rounded-xl p-8 space-y-4 shadow-[0_2px_8px_0_rgba(0,0,0,0.06)]">
-  <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-muted)]">
+<div className="bg-white rounded-xl p-8 space-y-4 shadow-soft">
+  <p className="font-en text-xs font-medium tracking-widest uppercase text-muted">
     Case Study
   </p>
-  <h3 className="font-[var(--font-display)] text-xl font-bold leading-snug text-[var(--color-primary)]">
+  <h3 className="font-display text-xl font-bold leading-snug text-primary">
     插畫即語言
   </h3>
-  <p className="font-[var(--font-body)] text-sm leading-[1.7] text-[var(--color-primary)]/70">
+  <p className="font-body text-sm leading-[1.7] text-primary/70">
     當插畫與文字共享同一套視覺語言，版面才能真正統一。
   </p>
   <Button variant="deep" size="sm">深入了解</Button>
@@ -528,17 +533,17 @@ import { Button } from "@/components/ui/button";
 
 ```tsx
 {/* 純色塊 tag：rounded-sm、無邊框 */}
-<span className="inline-block px-3 py-1 text-xs tracking-widest uppercase rounded bg-[var(--color-primary)] text-white">
+<span className="inline-block px-3 py-1 text-xs tracking-widest uppercase rounded bg-primary text-white">
   Editorial
 </span>
 
 {/* Accent tag */}
-<span className="inline-block px-3 py-1 text-xs tracking-widest uppercase rounded bg-[var(--color-accent)] text-white">
+<span className="inline-block px-3 py-1 text-xs tracking-widest uppercase rounded bg-accent text-white">
   New
 </span>
 
 {/* 淺色 muted tag */}
-<span className="inline-block px-3 py-1 text-xs tracking-widest uppercase rounded bg-[var(--color-background)] text-[var(--color-secondary)]">
+<span className="inline-block px-3 py-1 text-xs tracking-widest uppercase rounded bg-background text-secondary">
   Design
 </span>
 ```
@@ -546,12 +551,12 @@ import { Button } from "@/components/ui/button";
 ### 分隔線 / Divider
 
 ```tsx
-<hr className="border-t border-[var(--color-muted)] opacity-30" />
+<hr className="border-t border-muted opacity-30" />
 
 <div className="flex items-center gap-4 my-8">
-  <hr className="flex-1 border-t border-[var(--color-muted)] opacity-30" />
-  <span className="text-xs tracking-widest uppercase text-[var(--color-muted)]">VOL. 01</span>
-  <hr className="flex-1 border-t border-[var(--color-muted)] opacity-30" />
+  <hr className="flex-1 border-t border-muted opacity-30" />
+  <span className="text-xs tracking-widest uppercase text-muted">VOL. 01</span>
+  <hr className="flex-1 border-t border-muted opacity-30" />
 </div>
 ```
 
@@ -561,11 +566,11 @@ import { Button } from "@/components/ui/button";
 {/* 純色塊 input — rounded-md + soft shadow，hover/focus 加深陰影 */}
 <Input
   className="border-0 rounded-md bg-white
-             shadow-[0_2px_8px_0_rgba(0,0,0,0.06)]
+             shadow-soft
              px-4 py-2.5
-             text-[var(--color-primary)] placeholder:text-[var(--color-muted)]
+             text-primary placeholder:text-muted
              focus-visible:ring-0
-             focus-visible:shadow-[0_4px_16px_0_rgba(0,0,0,0.10)]
+             focus-visible:shadow-md
              transition-shadow duration-200"
   placeholder="你的電子信箱"
 />
@@ -607,8 +612,8 @@ import { Button } from "@/components/ui/button";
 // Hover 規則：只改線條粗細、顏色、底色填滿，不做彈跳
 <a
   href="#"
-  className="text-[var(--color-primary)] border-b border-transparent
-             hover:border-[var(--color-primary)]
+  className="text-primary border-b border-transparent
+             hover:border-primary
              transition-colors duration-200"
 >
   深入閱讀
@@ -688,21 +693,21 @@ import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[var(--color-background)]">
+    <main className="min-h-screen bg-background">
 
       {/* Eyebrow + 大標題 */}
       <section className="px-6 md:px-16 pt-32 pb-24">
         <div className="max-w-6xl mx-auto">
-          <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-secondary)] mb-6">
+          <p className="font-en text-xs font-medium tracking-widest uppercase text-secondary mb-6">
             Issue No. 01 — 2025
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-16 items-end">
             <div className="stagger">
-              <h1 className="font-[var(--font-display)] text-7xl md:text-8xl font-bold leading-[1.1] text-[var(--color-primary)]">
+              <h1 className="font-display text-7xl md:text-8xl font-bold leading-[1.1] text-primary">
                 設計是<br />一種閱讀
               </h1>
-              <p className="font-[var(--font-body)] mt-8 text-base leading-[1.7] text-[var(--color-primary)] max-w-[60ch]">
+              <p className="font-body mt-8 text-base leading-[1.7] text-primary max-w-[60ch]">
                 當版面成為故事，留白成為節奏，插畫成為語言——
                 這就是 Editorial UI 想帶給你的體驗。
               </p>
@@ -727,7 +732,7 @@ export default function HomePage() {
       {/* 分隔 */}
       <div className="px-6 md:px-16">
         <div className="max-w-6xl mx-auto">
-          <hr className="border-t border-[var(--color-muted)] opacity-30" />
+          <hr className="border-t border-muted opacity-30" />
         </div>
       </div>
 
@@ -736,20 +741,20 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { num: "01", title: "排版優先", bg: "bg-white", dark: false },
-            { num: "02", title: "留白敘事", bg: "bg-[var(--color-secondary)]", dark: true },
+            { num: "02", title: "留白敘事", bg: "bg-secondary", dark: true },
             { num: "03", title: "插畫語言", bg: "bg-white", dark: false },
           ].map(({ num, title, bg, dark }) => (
             <div
               key={num}
-              className={`${bg} rounded-xl p-8 space-y-4 shadow-[0_2px_8px_0_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200`}
+              className={`${bg} rounded-xl p-8 space-y-4 shadow-soft hover:shadow-md hover:-translate-y-0.5 transition-all duration-200`}
             >
-              <span className={`font-[var(--font-en)] text-xs tracking-widest uppercase rounded-md px-2 py-1 inline-block ${dark ? "bg-white/20 text-white" : "bg-[var(--color-background)] text-[var(--color-secondary)]"}`}>
+              <span className={`font-en text-xs tracking-widest uppercase rounded-md px-2 py-1 inline-block ${dark ? "bg-white/20 text-white" : "bg-background text-secondary"}`}>
                 {num}
               </span>
-              <h3 className={`font-[var(--font-display)] text-2xl font-medium leading-snug mt-2 ${dark ? "text-white" : "text-[var(--color-primary)]"}`}>
+              <h3 className={`font-display text-2xl font-medium leading-snug mt-2 ${dark ? "text-white" : "text-primary"}`}>
                 {title}
               </h3>
-              <p className={`font-[var(--font-body)] text-sm leading-[1.7] ${dark ? "text-white/70" : "text-[var(--color-primary)]/70"}`}>
+              <p className={`font-body text-sm leading-[1.7] ${dark ? "text-white/70" : "text-primary/70"}`}>
                 Editorial UI 讓每個決策都服務於閱讀體驗，而非功能展示。
               </p>
               <Button

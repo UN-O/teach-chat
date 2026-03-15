@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="209 482 130 60" fill="currentColor" style="color: black">
+  <defs>
+    <linearGradient id="logoGradient" x1="259.96" y1="527" x2="259.96" y2="482.01" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stopColor="#727373"/>
+      <stop offset="1" stopColor="currentColor"/>
+    </linearGradient>
+  </defs>
+  <g id="LOGO">
+    <path fill="url(#logoGradient)" d="m302.06,482.01l-11.71,14.99h-8.06s-10.97,0-17.62,8.51l-16.79,21.49h-30.01c10.98,0,17.87-8.83,17.87-8.83l21.61-27.67c6.63-8.48,18.3-8.5,18.37-8.5h26.35Z"/>
+    <path d="m321.1,482l-28.26,36.17-11.72,15s-6.89,8.83-17.87,8.83h-46.13l-7.32-15h46.13c10.97,0,17.87-8.83,17.87-8.83l16.54-21.17h0l11.71-14.99h19.04Z"/>
+  </g>
+</svg>
