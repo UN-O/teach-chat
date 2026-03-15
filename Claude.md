@@ -26,11 +26,14 @@ Current state: `src/app/`, `src/components/ui/`, `src/hooks/`, `src/lib/` exist.
 ```
 src/
 ├── app/                    # Next.js App Router pages
-│   ├── (marketing)/        # home, about, technique, blog, how-to-use
-│   ├── api/                # Route handlers (AI stream endpoints)
-│   └── scenario/
-│       └── [name]/
-│           └── [uuid]/     # intro, chatlist, chat, phase*/sectionclose, final
+│   ├── (marketing)/        # /home, /about, /technique, /blog, /how-to-use
+│   ├── polish/             # /polish — message rewrite tool (PolishService)
+│   ├── scenario/
+│   │   ├── page.tsx        # /scenario — scenario list
+│   │   └── [name]/
+│   │       ├── page.tsx    # /scenario/[name] — intro + difficulty selection
+│   │       └── [uuid]/     # game session: intro → chatlist → chat → phase*/sectionclose → final
+│   └── api/                # Route handlers (AI stream endpoints)
 ├── services/               # SOA service layer (pure functions / classes)
 │   ├── ScenarioService.ts  # scenario data & parent persona prompts
 │   ├── ScoringService.ts   # rubric evaluation (T01–T14)
@@ -50,10 +53,17 @@ src/
 
 # Style Guidelines
 
-- **Color palette**: Warm tones — amber, rose, warm-gray (shadcn `neutral` base). Avoid cold blues/greens.
-- **Typography**: Geist Sans is the primary font (already configured in layout). Add `Noto Sans TC` via `next/font/google` for Chinese body text.
-- **CSS**: Tailwind v4 uses `@import "tailwindcss"` (not `@tailwind base/components/utilities`). CSS variables are defined in `globals.css` using `oklch()`.
-- **Component variants**: Use `class-variance-authority` (cva) for multi-variant components.
+> Full spec: `style.md` — Editorial UI × React × Tailwind v4 × shadcn/ui
+
+- **Design philosophy**: Editorial UI — reading experience first. Layout is design, whitespace is narrative, illustration is language.
+- **Color palette**: `#B6D0E2` background · `#FFFFFF` surface · `#000000` primary text · `#2A3D66` secondary/deep-blue · `#808080` muted · `#FF5A5F` accent (max 2–3 uses/page) · `#4A90E2` accent-alt. Use CSS variables via `var(--color-*)`. No gradients, no glassmorphism.
+- **Typography**: `Chiron GoRound TC` (H1–H3, local font) · `Noto Sans TC` (body, Google Fonts) · `DM Sans` (English labels/eyebrow/numbers, Google Fonts). Only 3 weights: `400` / `500` / `700`. Line width: `max-w-[65ch]`.
+- **Font setup**: Load via `next/font/local` (Chiron) + `next/font/google` (Noto TC, DM Sans); expose as CSS variables `--font-chiron`, `--font-noto-tc`, `--font-dm-sans`.
+- **CSS**: Tailwind v4 uses `@import "tailwindcss"` + `@theme {}` block (not `@tailwind base/components/utilities`). All design tokens defined in `globals.css` using `@theme`.
+- **Components**: Use `class-variance-authority` (cva) for multi-variant components. Cards use `rounded-xl`, elements use `rounded-lg`, badges use `rounded-md`. Soft shadows (`0 2px 8px rgba(0,0,0,0.06)`) replace borders. No icons inside cards — use eyebrow labels instead.
+- **Motion**: Fade-in only (`opacity` + `translateY(12px)`). No bounce, no spring, no rotation. Use `transition-shadow` / `transition-colors` for hover, not `transition-all`.
+- **Layout**: Section padding `py-24 px-6 md:px-16`. Asymmetric grids: `grid-cols-[3fr_2fr]` or `[2fr_3fr]`. No 1:1 symmetric layouts.
+- **Illustrations**: `mix-blend-multiply` to blend with background. No rounded corners, no shadow, no card background on illustrations.
 - **Mobile-first**: Design for 375px viewport first; desktop is enhancement.
 - **Tone**: Empathetic, encouraging — never clinical or alarming.
 - **UI language**: Chinese (Traditional, zh-TW); set `lang="zh-TW"` on `<html>`.
@@ -105,6 +115,36 @@ NEXT_PUBLIC_APP_URL=        # e.g. https://teach-chat.vercel.app
 - Install packages with `pnpm add` / `pnpm add -D`.
 - Add shadcn components with `pnpm dlx shadcn add <component>`.
 - Never commit `.env.local`. Add all new vars to `.env.example` when introducing them.
+
+---
+
+# Allowed Commands (no confirmation needed)
+
+Claude may run the following commands autonomously without asking the user first:
+
+**pnpm**
+- `pnpm install` / `pnpm i`
+- `pnpm add <pkg>` / `pnpm add -D <pkg>`
+- `pnpm remove <pkg>`
+- `pnpm run <script>` (dev, build, lint, test, etc.)
+- `pnpm dlx shadcn add <component>`
+- `pnpm dlx <tool>`
+
+**git**
+- `git status` / `git log` / `git diff`
+- `git add <file>` (specific files only; not `git add -A` or `git add .` near `.env*`)
+- `git commit -m "..."`
+- `git checkout -b <branch>` / `git checkout <branch>`
+- `git pull` / `git fetch`
+- `git push` (to non-main branches only — confirm before pushing to `main`)
+- `git stash` / `git stash pop`
+
+**rm** (local files in the repo only)
+- `rm <file>` — single file removal
+- `rm -r <directory>` — recursive removal of a local directory (repo scope only)
+- Never `rm -rf /`, never target files outside the project root
+
+> Destructive or irreversible actions (force push, `reset --hard`, deleting branches, removing `.env` files) still require explicit user confirmation.
 
 ---
 
