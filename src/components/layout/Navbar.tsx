@@ -15,13 +15,18 @@ const navLinks = [
 export function Navbar() {
   return (
     <header className="sticky top-0 z-40 bg-[var(--color-surface)] shadow-[0_2px_8px_0_rgba(0,0,0,0.06)]">
-      <div className="max-w-6xl mx-auto px-6 md:px-16 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 xl:px-0 h-16 flex items-center justify-between">
         {/* Brand */}
         <Link
           href="/"
           className="font-[var(--font-display)] text-lg font-bold text-[var(--color-primary)] hover:opacity-80 transition-opacity"
         >
-          {siteText.siteName}
+            {/* logo */}
+            <img
+              src="/logo.svg"
+              alt={siteText.siteName}
+              className="h-8 w-8"
+            />
         </Link>
 
         {/* Desktop Nav */}

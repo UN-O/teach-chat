@@ -9,7 +9,7 @@
 - **Framework**: Next.js 16 + React 19 (App Router, TypeScript 5)
 - **Package manager**: pnpm
 - **Styling**: Tailwind CSS v4 + shadcn/ui (`neutral` base) + `lucide-react`
-- **Font**: Geist Sans / Geist Mono
+- **Font**: Chiron GoRound TC + Noto Sans TC + DM Sans
 - **AI**: Vercel AI SDK (`ai` v6 + `@ai-sdk/react`) with Claude as provider
 - **HTTP / Data**: `ky` (fetch wrapper) + `swr` (client-side data fetching)
 - **Testing**: Jest + Playwright (`--chrome`) — to be configured
@@ -22,6 +22,8 @@
 - [ ] Project setup — Next.js 14 + TypeScript + Tailwind + shadcn/ui
 - [ ] Folder structure & SOA service layer scaffolding
 - [ ] Environment variable setup (Claude API key, etc.)
+- [x] Development server uses HTTPS in local dev
+- [x] Typography refactor — align global font tokens with next/font
 - [ ] SEO & Open Graph meta configuration
 - [ ] Global style system (warm color palette, Chinese typography)
 - [ ] CI/CD pipeline setup
@@ -29,7 +31,7 @@
 ### Pages
 - [ ] `/home` — Hero, Hook, Introduction sections
 - [ ] `/technique` — New Teacher Handbook (communication tips)
-- [ ] `/about` — About the team & future plans
+- [x] `/about` — About the team & future plans
 - [ ] `/how-to-use` — Step-by-step usage guide
 - [ ] `/blog` — Teacher Ghost Stories (community posts)
 - [ ] `/polishtext` — AI message polish tool

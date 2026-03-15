@@ -8,10 +8,12 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <HookSection />
-      <IntroSection />
-      <OriginSection />
-      <ContactSection />
+      <div className="[&>section]:px-6 [&>section]:md:px-16">
+        <HookSection />
+        <IntroSection />
+        <OriginSection />
+        <ContactSection />
+      </div>
     </>
   );
 }

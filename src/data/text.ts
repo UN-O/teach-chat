@@ -31,10 +31,10 @@ export const homeText = {
   hook: {
     scenario: {
       eyebrow: "Scenario Practice",
-      h2: "「叮咚！」螢幕那頭的訊息，是不是又讓你的心跳漏了一拍？",
-      body: "真實的教育現場劇本，讓你先在這裡練習，造就在現實中的完美過關。",
-      ctaFight: "情境一：班級衝突",
-      ctaDisorder: "情境二：學生失常",
+      h2: "怎麼辦？親師溝通情境演練",
+      body: "「叮咚！」螢幕那頭的訊息，是不是又讓你的心跳漏了一拍？真實的教育現場劇本，讓你先在這裡練習，造就在現實中的完美過關。",
+      ctaFight: "情境一：同學們起衝突，怎麼跟家長說？",
+      ctaDisorder: "情境二：學生表現失常，與家長確認？",
       ctaMore: "探索更多真實挑戰",
     },
     polish: {

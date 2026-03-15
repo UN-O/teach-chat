@@ -10,7 +10,7 @@ Architecture: Service-Oriented Architecture (SOA)
 - **Framework**: Next.js 16 (App Router, TypeScript 5, React 19)
 - **Package manager**: pnpm
 - **Styling**: Tailwind CSS v4 + shadcn/ui (`neutral` base, `lucide-react` icons)
-- **Font**: Geist Sans + Geist Mono (via `geist` package)
+- **Font**: Chiron GoRound TC + Noto Sans TC + DM Sans
 - **AI**: Vercel AI SDK (`ai` v6 + `@ai-sdk/react`) — use `useChat` / `streamText` patterns
 - **HTTP**: `ky` for fetch wrapper (`src/lib/fetch.ts`); `swr` for client-side data fetching
 - **Utilities**: `clsx` + `tailwind-merge` via `cn()` helper (`src/lib/utils.ts`); `class-variance-authority` for component variants

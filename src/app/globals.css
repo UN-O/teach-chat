@@ -11,10 +11,9 @@
   --color-accent-alt:  #4A90E2;
 
   /* ── Typography ── */
-  /* Chiron GoRound TC: put woff2 in public/fonts/ (see Todo/images-needed.md) */
-  --font-display: "Chiron GoRound TC", "Noto Sans TC", "PingFang TC", sans-serif;
-  --font-body:    "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-  --font-en:      "DM Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: var(--font-chiron), var(--font-noto-tc), sans-serif;
+  --font-body:    var(--font-noto-tc), sans-serif;
+  --font-en:      var(--font-dm-sans), "Helvetica Neue", Helvetica, sans-serif;
 
   /* ── Spacing ── */
   --spacing-section: 6rem;
@@ -50,40 +49,23 @@
   --radius:            0.5rem;
 }
 
-/* ── Chiron GoRound TC — Local font ── */
-/* Place authorized woff2 files in public/fonts/ (see Todo/images-needed.md) */
-/* Silently falls back to Noto Sans TC if files are absent                    */
-@font-face {
-  font-family: "Chiron GoRound TC";
-  src: url("/fonts/ChironGoRoundTC-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Chiron GoRound TC";
-  src: url("/fonts/ChironGoRoundTC-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Chiron GoRound TC";
-  src: url("/fonts/ChironGoRoundTC-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-display: swap;
-}
-
-/* ── DM Sans — Local font (optional, falls back to Helvetica) ── */
-/* Place DM Sans woff2 in public/fonts/ for better English typography */
-
 @layer base {
   * {
-    @apply border-[var(--color-border)];
+    @apply border-(--color-border);
     transition-timing-function: var(--ease-editorial);
   }
   body {
     background-color: var(--color-background);
     color: var(--color-primary);
     font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
   }
 }
 

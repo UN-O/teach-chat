@@ -2,7 +2,7 @@ import { homeText } from "@/data/text";
 
 export function IntroSection() {
   return (
-    <section id="intro" className="px-6 md:px-16 py-24 bg-[var(--color-background)]">
+    <section id="intro" className="py-24 bg-[var(--color-background)]">
       <div className="max-w-6xl mx-auto">
         <div className="mb-16 space-y-4">
           <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-secondary)]">
@@ -40,7 +40,7 @@ export function IntroSection() {
             <img
               src="/images/feature-polish.svg"
               alt="訊息潤飾功能截圖"
-              className="w-full h-auto object-contain mix-blend-screen rounded-lg overflow-hidden"
+              className="w-full h-auto object-contain rounded-lg overflow-hidden"
             />
             <h3 className="font-[var(--font-display)] text-xl font-bold leading-snug text-white">
               {homeText.intro.polish.h3}

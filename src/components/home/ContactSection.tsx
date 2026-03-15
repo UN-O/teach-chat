@@ -3,7 +3,7 @@ import { homeText } from "@/data/text";
 
 export function ContactSection() {
   return (
-    <section className="px-6 md:px-16 py-24 bg-[var(--color-primary)]">
+    <section className="py-24 bg-[var(--color-primary)]">
       <div className="max-w-6xl mx-auto text-center space-y-8">
         <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-white/50">
           {homeText.contact.eyebrow}

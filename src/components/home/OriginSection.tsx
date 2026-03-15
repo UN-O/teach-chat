@@ -2,14 +2,14 @@ import { homeText } from "@/data/text";
 
 export function OriginSection() {
   return (
-    <section className="px-6 md:px-16 py-24 bg-[var(--color-surface)]">
+    <section className="py-24 bg-[var(--color-surface)]">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-12 md:gap-16 items-center">
           <div>
             <img
-              src="/images/origin-team.svg"
+              src="/images/origin-team.webp"
               alt="AI創新教育工學圈圈團隊合照"
-              className="w-full h-auto object-contain mix-blend-multiply"
+              className="w-full h-auto object-contain mix-blend-multiply rounded-xl"
             />
           </div>
           <div className="space-y-6">
