@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { scenarioMeta } from '@/data/scenarios'
 
@@ -11,7 +12,7 @@ export default function ScenarioListPage() {
 
   return (
     <main className="min-h-screen bg-background py-24 px-6 md:px-16">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="mb-12">
           <p className="text-xs tracking-widest text-muted font-[var(--font-dm-sans)] uppercase mb-3">
             情境訓練
@@ -24,21 +25,25 @@ export default function ScenarioListPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {scenarios.map(scenario => (
             <Link
               key={scenario.name}
               href={`/scenario/${scenario.name}`}
-              className="group block bg-white rounded-xl p-8 shadow-soft hover:shadow-md transition-shadow"
+              className="group block bg-white rounded-2xl overflow-hidden shadow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-md"
             >
-              <div className="flex items-start justify-between mb-6">
-                <div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
-                  style={{ backgroundColor: `${scenario.color}15` }}
-                >
-                  {scenario.name === 'fight' ? '⚡' : '🫧'}
-                </div>
-                <div className="flex gap-1.5">
+              <div className="relative aspect-[4/3] w-full overflow-hidden">
+                <Image
+                  src={scenario.image}
+                  alt={`${scenario.title}情境圖示`}
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="block h-full w-full object-cover scale-x-[1.06]"
+                />
+              </div>
+
+              <div className="p-6 md:p-7">
+                <div className="mb-3 flex gap-1.5">
                   {scenario.difficulties.map(d => (
                     <span
                       key={d}
@@ -48,18 +53,18 @@ export default function ScenarioListPage() {
                     </span>
                   ))}
                 </div>
-              </div>
 
-              <h2 className="font-[var(--font-chiron)] text-xl font-bold text-black mb-2 group-hover:text-[#2A3D66] transition-colors">
-                {scenario.title}
-              </h2>
-              <p className="text-sm text-black/60 leading-relaxed mb-6 max-w-[40ch]">
-                {scenario.description}
-              </p>
+                <h2 className="font-[var(--font-chiron)] text-2xl font-bold text-black mb-3 group-hover:text-[#2A3D66] transition-colors">
+                  {scenario.title}
+                </h2>
+                <p className="text-sm md:text-base text-black/65 leading-relaxed mb-7 max-w-[42ch]">
+                  {scenario.description}
+                </p>
 
-              <div className="flex items-center text-sm font-medium text-[#4A90E2]">
-                開始練習
-                <ArrowRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                <div className="flex items-center text-sm font-medium text-[#4A90E2]">
+                  開始練習
+                  <ArrowRight size={14} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
             </Link>
           ))}

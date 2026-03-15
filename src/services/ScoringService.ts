@@ -8,7 +8,7 @@ const scoreResultSchema = z.object({
     z.object({
       techniqueId: z.string(),
       techniqueName: z.string(),
-      score: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]),
+      score: z.number().int().min(1).max(4),
       feedback: z.string(),
       suggestion: z.string(),
     })
@@ -88,7 +88,7 @@ export async function scorePhase(
   return output.scores.map(s => ({
     techniqueId: s.techniqueId,
     techniqueName: s.techniqueName,
-    score: s.score,
+    score: s.score as ScoreResult['score'],
     feedback: s.feedback,
     suggestion: s.suggestion,
   }))

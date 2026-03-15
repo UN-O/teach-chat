@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import Image from 'next/image'
 import { ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
 import { getScenarioConfig, scenarioMeta } from '@/data/scenarios'
 import type { ScenarioName, Difficulty } from '@/types'
 
@@ -25,27 +25,45 @@ export default function ScenarioIntroPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background py-16 px-6 md:px-16">
-      <div className="max-w-3xl mx-auto">
-        <Link
-          href="/scenario"
-          className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-black transition-colors mb-10"
-        >
-          <ArrowLeft size={14} />
-          返回情境列表
-        </Link>
+    <main className="min-h-svh bg-background py-16 px-6 md:px-16">
+      <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-3xl">
+          <button
+            type="button"
+            onClick={() => router.push('/scenario')}
+            className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-black transition-colors mb-10"
+          >
+            <ArrowLeft size={14} />
+            返回情境列表
+          </button>
 
-        <div className="mb-8">
-          <p className="text-xs tracking-widest text-muted font-[var(--font-dm-sans)] uppercase mb-3">
-            情境模擬
-          </p>
-          <h1 className="font-[var(--font-chiron)] text-4xl font-bold text-black mb-4">
-            {meta.title}
-          </h1>
-          <p className="text-base text-black/70 leading-relaxed max-w-[55ch]">
-            {meta.description}
-          </p>
+          <div className="mb-8">
+            <p className="text-xs tracking-widest text-muted font-[var(--font-dm-sans)] uppercase mb-3">
+              情境模擬
+            </p>
+            <h1 className="font-[var(--font-chiron)] text-4xl font-bold text-black mb-4">
+              {meta.title}
+            </h1>
+            <p className="text-base text-black/70 leading-relaxed max-w-[55ch]">
+              {meta.description}
+            </p>
+          </div>
         </div>
+
+        <div className="mb-8 mx-auto max-w-3xl">
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-4xl">
+            <Image
+              src={meta.image}
+              alt={`${meta.title}情境主圖`}
+              fill
+              sizes="(min-width: 1280px) 80rem, 100vw"
+              className="block h-full w-full object-cover scale-x-[1.06]"
+              priority
+            />
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-3xl">
 
         {/* Difficulty Tabs */}
         <div className="flex gap-2 mb-6">
@@ -91,8 +109,8 @@ export default function ScenarioIntroPage() {
 
           <div>
             <p className="text-xs text-muted mb-3 font-[var(--font-dm-sans)]">互動對象</p>
-            <div className="grid grid-cols-2 gap-4">
-              {(['A', 'B'] as const).map(parentId => {
+            <div className={`grid gap-4 ${scenario.parentIds.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+              {scenario.parentIds.map(parentId => {
                 const parent = scenario.parents[parentId]
                 return (
                   <div key={parentId} className="bg-background rounded-lg p-4">
@@ -114,6 +132,7 @@ export default function ScenarioIntroPage() {
         >
           開始練習 →
         </button>
+        </div>
       </div>
     </main>
   )

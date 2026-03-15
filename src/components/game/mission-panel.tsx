@@ -7,11 +7,11 @@ import type { MissionItem } from '@/types'
 
 interface MissionPanelProps {
   missions: MissionItem[]
-  phase: 1 | 2
+  title?: string
 }
 
-export function MissionPanel({ missions, phase }: MissionPanelProps) {
-  const [isOpen, setIsOpen] = useState(false)
+export function MissionPanel({ missions, title }: MissionPanelProps) {
+  const [isOpen, setIsOpen] = useState(true)
   const completedCount = missions.filter(m => m.completed).length
   const allDone = completedCount === missions.length
 
@@ -28,7 +28,7 @@ export function MissionPanel({ missions, phase }: MissionPanelProps) {
       >
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-black">
-            Phase {phase} 任務
+            {title ?? `任務`}
           </span>
           <span
             className={cn(

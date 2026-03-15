@@ -47,6 +47,7 @@
 - [x] `/scenario/[name]/[difficulty]/[uuid]/score/phase1` — Phase 1 scoring & radar chart
 - [x] `/scenario/[name]/[difficulty]/[uuid]/score/phase2` — Phase 2 scoring & radar chart
 - [x] `/scenario/[name]/[difficulty]/[uuid]/final` — Final results, total radar chart & recommendations
+- [x] `/scenario/[name]` 之下的練習流程隱藏 navbar，並為離開操作加入確認 dialog
 - [x] Services: ScenarioService, ScoringService, GameEngineService (6 LLM Actions)
 - [x] Zustand store with localStorage persistence
 - [x] API routes: /api/chat, /api/game/check-mission, /api/game/check-send, /api/game/update-pad, /api/score

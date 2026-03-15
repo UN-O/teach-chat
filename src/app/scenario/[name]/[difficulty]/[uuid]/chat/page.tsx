@@ -2,20 +2,35 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Info } from 'lucide-react'
+import { ArrowLeft, Info, RotateCcw } from 'lucide-react'
 import { useGameStore } from '@/store/game-store'
 import { getScenarioConfig } from '@/data/scenarios'
+import { ConfirmNavigationDialog } from '@/components/shared/confirm-navigation-dialog'
 import { getInitialTriggerMessage, getMissionLabels } from '@/services/ScenarioService'
 import { calculateTDelay } from '@/services/GameEngineService'
 import { ChatBubble } from '@/components/game/chat-bubble'
 import { ChatInput } from '@/components/game/chat-input'
 import { ChatList, getLastMessage, getUnreadCount } from '@/components/game/chat-list'
 import { MissionPanel } from '@/components/game/mission-panel'
+import { ScoreEntryButton } from '@/components/game/score-entry-button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import type { ScenarioName, Difficulty, ParentId, Message, MissionItem } from '@/types'
 import { cn } from '@/lib/utils'
 
 const CHECK_MISSION_DEBOUNCE = 2000  // 2s after last message
 const CHECK_SEND_INTERVAL = 15000   // 15s
+const SEND_GUARD_MS = 400
+const DUPLICATE_CONTENT_GUARD_MS = 1500
 
 export default function ChatPage() {
   const params = useParams<{ name: string; difficulty: string; uuid: string }>()
@@ -35,8 +50,8 @@ export default function ChatPage() {
   const setParentOnline = useGameStore(s => s.setParentOnline)
   const setActiveParent = useGameStore(s => s.setActiveParent)
   const updateLastCheckSend = useGameStore(s => s.updateLastCheckSend)
-  const setPhase = useGameStore(s => s.setPhase)
   const setPhaseDone = useGameStore(s => s.setPhaseDone)
+  const resetParentPhaseState = useGameStore(s => s.resetParentPhaseState)
 
   const [activeParentId, setActiveParentIdLocal] = useState<ParentId>('A')
   const [inputValue, setInputValue] = useState('')
@@ -44,18 +59,20 @@ export default function ChatPage() {
   const [isMobileChat, setIsMobileChat] = useState(false)
   const [allMissionsDone, setAllMissionsDone] = useState(false)
   const [isCheckingMission, setIsCheckingMission] = useState(false)
+  const [isParentInfoDialogOpen, setIsParentInfoDialogOpen] = useState(false)
+  const [isStoryDialogOpen, setIsStoryDialogOpen] = useState(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const checkMissionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const checkSendIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const phase2AutoTriggerRef = useRef<Record<ParentId, boolean>>({ A: false, B: false })
+  const isSubmittingRef = useRef(false)
+  const lastSubmitAtRef = useRef(0)
+  const lastSubmittedContentRef = useRef<{ content: string; at: number; parentId: ParentId; phase: 1 | 2 } | null>(null)
 
   const currentPhase = session?.currentPhase ?? 1
   const parentSession = session?.parents[activeParentId]
   const messages = parentSession?.messages ?? []
-  const missions: MissionItem[] = currentPhase === 1
-    ? (parentSession?.phase1Missions ?? [])
-    : (parentSession?.phase2Missions ?? [])
-
   // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -68,30 +85,96 @@ export default function ChatPage() {
     }
   }, [activeParentId, parentSession, markMessagesRead])
 
-  // Check if all missions done
+  // Check if all current-phase missions are done across all parents
   useEffect(() => {
-    const done = missions.length > 0 && missions.every(m => m.completed)
-    setAllMissionsDone(done)
-  }, [missions])
+    if (!session) {
+      setAllMissionsDone(false)
+      return
+    }
 
-  // Phase 2: trigger initial message for each parent when they go online
+    const done = scenario.parentIds.every(pid => {
+      const phaseMissions = currentPhase === 1
+        ? session.parents[pid].phase1Missions
+        : session.parents[pid].phase2Missions
+      return phaseMissions.length > 0 && phaseMissions.every(m => m.completed)
+    })
+
+    setAllMissionsDone(done)
+  }, [session, currentPhase, scenario])
+
+  // Reset one-time phase2 auto trigger when session changes
+  useEffect(() => {
+    phase2AutoTriggerRef.current = { A: false, B: false }
+  }, [session?.sessionId])
+
+  // Phase 2: auto trigger once immediately when entering chat (per parent)
   useEffect(() => {
     if (currentPhase !== 2 || !session) return
 
-    const parent = session.parents[activeParentId]
-    if (parent.isOnline || parent.messages.length > 0) return
+    if (phase2AutoTriggerRef.current[activeParentId]) return
 
-    // Go online and send initial trigger message
-    setParentOnline(activeParentId)
-    const triggerMsg = getInitialTriggerMessage(scenario, activeParentId)
-    const assistantMsg: Message = {
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: triggerMsg,
-      timestamp: Date.now(),
+    const parent = session.parents[activeParentId]
+    const phase2StartCount = parent.phase2StartSnapshot?.messages.length ?? 0
+    const hasNewPhase2Messages = parent.messages.length > phase2StartCount
+
+    if (hasNewPhase2Messages) {
+      phase2AutoTriggerRef.current[activeParentId] = true
+      return
     }
-    addMessage(activeParentId, assistantMsg)
-  }, [currentPhase, activeParentId, session, scenario, setParentOnline, addMessage])
+
+    phase2AutoTriggerRef.current[activeParentId] = true
+
+    const runAutoTrigger = async () => {
+      setParentOnline(activeParentId)
+      updateLastCheckSend(activeParentId)
+
+      try {
+        const res = await fetch('/api/game/check-send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            scenarioName: name,
+            difficulty,
+            parentId: activeParentId,
+            phase: currentPhase,
+            messages: parent.messages,
+            padState: parent.padState,
+            memory: parent.memory,
+          }),
+        })
+        const data = await res.json() as { shouldSend: boolean; bubbles: string[] }
+
+        if (data.bubbles.length > 0) {
+          addPendingSeq(activeParentId, data.bubbles)
+          return
+        }
+      } catch {
+        // silently fail and fallback to deterministic trigger
+      }
+
+      const triggerMsg = getInitialTriggerMessage(scenario, activeParentId)
+      const assistantMsg: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: triggerMsg,
+        timestamp: Date.now(),
+      }
+      addMessage(activeParentId, assistantMsg)
+    }
+
+    void runAutoTrigger()
+  }, [
+    currentPhase,
+    session,
+    activeParentId,
+    name,
+    difficulty,
+    scenario,
+    setParentOnline,
+    updateLastCheckSend,
+    addPendingSeq,
+    addMessage,
+  ])
 
   // Phase 2: Flush pending seq bubbles with 800ms gap
   useEffect(() => {
@@ -188,9 +271,31 @@ export default function ChatPage() {
   }, [isCheckingMission, session, currentPhase, name, difficulty, updateMissions])
 
   const handleSendMessage = async () => {
+    const now = Date.now()
+    if (isSubmittingRef.current) return
+    if (now - lastSubmitAtRef.current < SEND_GUARD_MS) return
     if (!inputValue.trim() || isLoading || !session) return
 
     const content = inputValue.trim()
+    const lastSubmitted = lastSubmittedContentRef.current
+    if (
+      lastSubmitted &&
+      lastSubmitted.content === content &&
+      lastSubmitted.parentId === activeParentId &&
+      lastSubmitted.phase === currentPhase &&
+      now - lastSubmitted.at < DUPLICATE_CONTENT_GUARD_MS
+    ) {
+      return
+    }
+
+    isSubmittingRef.current = true
+    lastSubmitAtRef.current = now
+    lastSubmittedContentRef.current = {
+      content,
+      at: now,
+      parentId: activeParentId,
+      phase: currentPhase,
+    }
     setInputValue('')
 
     const userMsg: Message = {
@@ -251,13 +356,27 @@ export default function ChatPage() {
         // silently fail
       } finally {
         setIsLoading(false)
+        isSubmittingRef.current = false
       }
+      return
     }
+
+    isSubmittingRef.current = false
+  }
+
+  const goToScorePage = () => {
+    router.push(`/scenario/${name}/${difficulty}/${params.uuid}/score/phase${currentPhase}`)
   }
 
   const handleGoToScore = () => {
-    setPhaseDone(activeParentId, currentPhase)
-    router.push(`/scenario/${name}/${difficulty}/${params.uuid}/score/phase${currentPhase}`)
+    scenario.parentIds.forEach(pid => {
+      setPhaseDone(pid, currentPhase)
+    })
+    goToScorePage()
+  }
+
+  const handleDirectGoToScore = () => {
+    goToScorePage()
   }
 
   const handleSelectParent = (parentId: ParentId) => {
@@ -266,17 +385,41 @@ export default function ChatPage() {
     setIsMobileChat(true)
   }
 
+  const handleRestartCurrentChat = () => {
+    if (checkMissionTimerRef.current) {
+      clearTimeout(checkMissionTimerRef.current)
+      checkMissionTimerRef.current = null
+    }
+    setInputValue('')
+    setIsLoading(false)
+    isSubmittingRef.current = false
+    resetParentPhaseState(activeParentId, currentPhase)
+  }
+
+  const formatParentDisplayName = (parentId: ParentId) => {
+    const parent = scenario.parents[parentId]
+    return parent.childRelationLabel
+      ? `${parent.name}（${parent.childRelationLabel}）`
+      : parent.name
+  }
+
+  const getPadTone = (value: number, positiveLabel: string, neutralLabel: string, negativeLabel: string) => {
+    if (value >= 2) return positiveLabel
+    if (value <= -2) return negativeLabel
+    return neutralLabel
+  }
+
   if (!session) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-svh bg-background flex items-center justify-center">
         <p className="text-muted">找不到遊戲 session，請重新開始。</p>
       </div>
     )
   }
 
-  const chatListItems = (['A', 'B'] as ParentId[]).map(pid => ({
+  const chatListItems = scenario.parentIds.map(pid => ({
     parentId: pid,
-    name: scenario.parents[pid].name,
+    name: formatParentDisplayName(pid),
     avatar: scenario.parents[pid].name.slice(0, 1),
     lastMessage: getLastMessage(session.parents[pid].messages),
     unreadCount: getUnreadCount(session.parents[pid].messages),
@@ -284,20 +427,34 @@ export default function ChatPage() {
     phase1Done: session.parents[pid].phase1Done,
   }))
 
-  const missionLabels = getMissionLabels(scenario, activeParentId, currentPhase)
-  const missionItems: MissionItem[] = missions.length > 0 ? missions : missionLabels.map(m => ({ ...m, completed: false }))
+  const missionPanels = scenario.parentIds.map(pid => {
+    const parentMissions = currentPhase === 1
+      ? session.parents[pid].phase1Missions
+      : session.parents[pid].phase2Missions
+    const parentMissionLabels = getMissionLabels(scenario, pid, currentPhase)
+    const items: MissionItem[] = parentMissions.length > 0
+      ? parentMissions
+      : parentMissionLabels.map(m => ({ ...m, completed: false }))
+
+    return {
+      parentId: pid,
+      title: `${formatParentDisplayName(pid)} 任務`,
+      missions: items,
+    }
+  })
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-svh bg-background">
       {/* Desktop sidebar + Mobile list */}
       <div className={cn(
         'bg-white border-r border-gray-100 flex flex-col',
-        'w-full md:w-72 md:flex-shrink-0',
+        'w-full md:w-72 md:shrink-0',
         isMobileChat ? 'hidden md:flex' : 'flex',
       )}>
         {/* Header */}
         <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
           <button
+            type="button"
             onClick={() => router.push(`/scenario/${name}`)}
             className="text-muted hover:text-black transition-colors"
           >
@@ -310,8 +467,14 @@ export default function ChatPage() {
         </div>
 
         {/* Mission Panel */}
-        <div className="p-3 border-b border-gray-50">
-          <MissionPanel missions={missionItems} phase={currentPhase} />
+        <div className="p-3 border-b border-gray-50 space-y-2">
+          {missionPanels.map(panel => (
+            <MissionPanel
+              key={panel.parentId}
+              title={panel.title}
+              missions={panel.missions}
+            />
+          ))}
         </div>
 
         {/* Chat List */}
@@ -323,15 +486,43 @@ export default function ChatPage() {
           />
         </div>
 
+        <div className="p-3 border-t border-gray-100 space-y-2">
+          <AlertDialog open={isStoryDialogOpen} onOpenChange={setIsStoryDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <button
+                type="button"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-black transition-colors hover:bg-background"
+              >
+                完整事件介紹
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="max-w-lg">
+              <AlertDialogHeader>
+                <AlertDialogTitle>{scenario.title}｜完整事件介紹</AlertDialogTitle>
+                <AlertDialogDescription className="max-h-[50svh] overflow-y-auto whitespace-pre-line text-left">
+                  {scenario.storyLine}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>關閉</AlertDialogCancel>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <ScoreEntryButton
+            state="direct"
+            phase={currentPhase}
+            onConfirm={handleDirectGoToScore}
+          />
+        </div>
+
         {/* Phase done button */}
         {allMissionsDone && (
           <div className="p-3 border-t border-gray-100">
-            <button
-              onClick={handleGoToScore}
-              className="w-full py-2.5 bg-[#2A3D66] text-white rounded-lg text-sm font-medium hover:bg-[#1e2d4f] transition-colors"
-            >
-              Phase {currentPhase} 完成 → 進入評分
-            </button>
+            <ScoreEntryButton
+              state="ready"
+              phase={currentPhase}
+              onConfirm={handleGoToScore}
+            />
           </div>
         )}
       </div>
@@ -349,31 +540,112 @@ export default function ChatPage() {
           >
             <ArrowLeft size={18} />
           </button>
-          <div className="w-9 h-9 rounded-full bg-[#2A3D66] flex items-center justify-center">
+          <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
             <span className="text-white text-sm font-medium">
               {scenario.parents[activeParentId].name.slice(0, 1)}
             </span>
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-black">{scenario.parents[activeParentId].name}</p>
+            <p className="text-sm font-medium text-black">{formatParentDisplayName(activeParentId)}</p>
             <p className="text-xs text-muted">
               {parentSession?.isOnline ? '在線' : '未上線'}
             </p>
           </div>
-          <button
-            title="事件說明"
-            className="text-muted hover:text-black transition-colors"
-          >
-            <Info size={18} />
-          </button>
+          <AlertDialog open={isParentInfoDialogOpen} onOpenChange={setIsParentInfoDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <button
+                type="button"
+                title="角色狀態與介紹"
+                className="h-8 w-8 flex items-center justify-center rounded-md text-muted hover:text-black transition-colors"
+              >
+                <Info size={16} />
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="max-w-lg">
+              <AlertDialogHeader>
+                <AlertDialogTitle>{formatParentDisplayName(activeParentId)}｜角色狀態與介紹</AlertDialogTitle>
+              </AlertDialogHeader>
+              <div className="max-h-[58svh] space-y-4 overflow-y-auto text-sm leading-relaxed text-black/80">
+                <section className="space-y-2 rounded-lg bg-background px-4 py-3">
+                  <p className="text-xs font-medium tracking-widest text-muted">目前狀態</p>
+                  <div className="space-y-1">
+                    <p>階段：Phase {currentPhase}</p>
+                    <p>在線狀態：{parentSession?.isOnline ? '在線' : '未上線'}</p>
+                    <p>
+                      情緒狀態：
+                      {getPadTone(parentSession?.padState.pleasure ?? 0, '較願意合作', '相對平穩', '偏低落或不悅')}
+                      ・
+                      {getPadTone(parentSession?.padState.arousal ?? 0, '情緒偏高', '情緒穩定', '較冷靜')}
+                      ・
+                      {getPadTone(parentSession?.padState.dominance ?? 0, '主導感較強', '互動普通', '較被動')}
+                    </p>
+                    <p>
+                      PAD：P {parentSession?.padState.pleasure ?? 0} / A {parentSession?.padState.arousal ?? 0} / D {parentSession?.padState.dominance ?? 0}
+                    </p>
+                  </div>
+                </section>
+
+                <section className="space-y-2">
+                  <p className="text-xs font-medium tracking-widest text-muted">角色介紹</p>
+                  <div className="space-y-1">
+                    <p>職業背景：{scenario.parents[activeParentId].occupation}</p>
+                    <p>個性特徵：{scenario.parents[activeParentId].personality}</p>
+                    <p>說話風格：{scenario.parents[activeParentId].speechStyle}</p>
+                    <p>教養方式：{scenario.parents[activeParentId].parentingStyle}</p>
+                    <p>核心動機：{scenario.parents[activeParentId].coreMotivation}</p>
+                    <p>家庭背景：{scenario.parents[activeParentId].background}</p>
+                    <p>初始認知：{scenario.parents[activeParentId].initialKnowledge}</p>
+                  </div>
+                </section>
+
+                <section className="space-y-2">
+                  <p className="text-xs font-medium tracking-widest text-muted">目前對話印象</p>
+                  <div className="space-y-1">
+                    <p>對事件理解：{parentSession?.memory.events || '目前還沒有明確整理。'}</p>
+                    <p>對老師印象：{parentSession?.memory.teacherImpression || '目前還沒有形成明確印象。'}</p>
+                  </div>
+                </section>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogAction onClick={() => setIsParentInfoDialogOpen(false)}>我了解了</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <ConfirmNavigationDialog
+            title={`重置 ${formatParentDisplayName(activeParentId)}？`}
+            description={`這會把目前對話重置到 Phase ${currentPhase} 一開始，這個家長在本階段的訊息、任務與評分會清空。`}
+            confirmLabel="重置"
+            cancelLabel="取消"
+            onConfirm={handleRestartCurrentChat}
+            trigger={
+              <button
+                type="button"
+                title="重置目前對話"
+                className="text-muted hover:text-black transition-colors"
+              >
+                <RotateCcw size={16} />
+              </button>
+            }
+          />
           {allMissionsDone && (
-            <button
-              onClick={handleGoToScore}
-              className="px-3 py-1.5 bg-[#2A3D66] text-white rounded-lg text-xs font-medium hover:bg-[#1e2d4f] transition-colors"
-            >
-              完成評分 →
-            </button>
+            <ScoreEntryButton
+              state="ready"
+              phase={currentPhase}
+              compact
+              onConfirm={handleGoToScore}
+            />
           )}
+        </div>
+
+        {/* Mobile mission panel */}
+        <div className="p-3 border-b border-gray-50 md:hidden space-y-2">
+          {missionPanels.map(panel => (
+            <MissionPanel
+              key={panel.parentId}
+              title={panel.title}
+              missions={panel.missions}
+            />
+          ))}
         </div>
 
         {/* Phase indicator */}
@@ -384,7 +656,12 @@ export default function ChatPage() {
         )}
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+        <div
+          className={cn(
+            'flex-1 px-4 py-4 space-y-1',
+            messages.length === 0 && !isLoading ? 'overflow-y-hidden' : 'overflow-y-auto',
+          )}
+        >
           {messages.length === 0 && (
             <div className="flex items-center justify-center h-full">
               <p className="text-sm text-muted text-center">
@@ -405,7 +682,7 @@ export default function ChatPage() {
           ))}
           {isLoading && (
             <div className="flex items-center gap-1.5 mb-3">
-              <div className="w-9 h-9 rounded-full bg-[#2A3D66] flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center shrink-0">
                 <span className="text-white text-sm">{scenario.parents[activeParentId].name.slice(0, 1)}</span>
               </div>
               <div className="bg-white rounded-2xl px-4 py-3 shadow-soft">

@@ -1,7 +1,10 @@
 'use client'
 
+import Image from 'next/image'
+import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useGameStore } from '@/store/game-store'
+import { ConfirmNavigationDialog } from '@/components/shared/confirm-navigation-dialog'
 import { getScenarioConfig } from '@/data/scenarios'
 import { ScoreCard, TotalScoreDisplay } from '@/components/game/score-card'
 import { SkillRadarChart } from '@/components/game/radar-chart'
@@ -22,6 +25,23 @@ export default function FinalPage() {
     ...(session?.parents.A.phase1Scores ?? []),
     ...(session?.parents.A.phase2Scores ?? []),
   ]
+  const lowScores = allScores.filter(s => s.score <= 2)
+
+  const recommendedTechniques = lowScores.slice(0, 3).map(score => {
+    const numericId = score.techniqueId.replace(/\D/g, '')
+    const docId = numericId ? numericId.padStart(2, '0') : null
+    const imageIndex = Number.parseInt(numericId, 10)
+    const imageSrc = Number.isNaN(imageIndex)
+      ? '/images/techniques/shared-cover.svg'
+      : `/images/techniques/${imageIndex}.svg`
+
+    return {
+      ...score,
+      href: docId ? `/docs/techniques/${docId}` : '/technique',
+      imageSrc,
+      imageAlt: `${score.techniqueName} 延伸閱讀封面`,
+    }
+  })
 
   const totalEarned = allScores.reduce((sum, s) => sum + s.score, 0)
   const totalMax = allScores.length * 4
@@ -45,7 +65,7 @@ export default function FinalPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background py-16 px-6 md:px-16">
+    <main className="min-h-svh bg-background py-16 px-6 md:px-16">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8 text-center">
           <p className="text-xs tracking-widest text-muted font-[var(--font-dm-sans)] uppercase mb-2">
@@ -95,22 +115,36 @@ export default function FinalPage() {
         {/* Recommended reading */}
         <div className="bg-[#B6D0E2]/20 rounded-xl p-6 mb-8">
           <p className="text-sm font-medium text-[#2A3D66] mb-3">延伸閱讀</p>
-          <div className="space-y-2">
-            {allScores
-              .filter(s => s.score <= 2)
-              .slice(0, 3)
-              .map(s => (
-                <div key={s.techniqueId} className="text-xs text-black/70">
-                  →{' '}
-                  <a
-                    href={`/technique`}
-                    className="text-[#4A90E2] hover:underline"
-                  >
-                    {s.techniqueId}：{s.techniqueName}
-                  </a>
+          <div className="space-y-3">
+            {recommendedTechniques.map(s => (
+              <Link
+                key={s.techniqueId}
+                href={s.href}
+                className="group block overflow-hidden rounded-xl bg-white shadow-soft transition-shadow hover:shadow-md"
+              >
+                <div className="relative aspect-[16/9] w-full bg-background/60">
+                  <Image
+                    src={s.imageSrc}
+                    alt={s.imageAlt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 672px"
+                    className="object-cover"
+                  />
                 </div>
-              ))}
-            {allScores.filter(s => s.score <= 2).length === 0 && (
+                <div className="px-4 py-3 md:px-5 md:py-4">
+                  <p className="text-[11px] tracking-wide text-muted font-[var(--font-dm-sans)] uppercase mb-1">
+                    Recommended Reading
+                  </p>
+                  <p className="text-base font-medium text-black">
+                    {s.techniqueId}：{s.techniqueName}
+                  </p>
+                  <p className="text-sm text-[#4A90E2] mt-1 group-hover:underline">
+                    查看技巧文章 →
+                  </p>
+                </div>
+              </Link>
+            ))}
+            {lowScores.length === 0 && (
               <p className="text-xs text-muted">表現優秀！繼續挑戰更高難度的情境。</p>
             )}
           </div>
@@ -124,13 +158,22 @@ export default function FinalPage() {
           >
             從 Phase 2 重新練習
           </button>
+          <ConfirmNavigationDialog
+            title="重新開始這個情境？"
+            description="重新開始會清除目前這一輪的練習 session，並回到情境入口。"
+            confirmLabel="重新開始"
+            onConfirm={handleRestart}
+            trigger={
+              <button
+                type="button"
+                className="w-full py-3.5 bg-white text-[#2A3D66] rounded-xl font-medium border border-[#2A3D66]/20 hover:bg-background transition-colors"
+              >
+                從頭重新開始
+              </button>
+            }
+          />
           <button
-            onClick={handleRestart}
-            className="w-full py-3.5 bg-white text-[#2A3D66] rounded-xl font-medium border border-[#2A3D66]/20 hover:bg-background transition-colors"
-          >
-            從頭重新開始
-          </button>
-          <button
+            type="button"
             onClick={() => router.push('/scenario')}
             className="w-full py-3 text-muted text-sm hover:text-black transition-colors"
           >

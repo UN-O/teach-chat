@@ -49,6 +49,14 @@ export interface ParentMemory {
   teacherImpression: string
 }
 
+export interface PhaseStartSnapshot {
+  messages: Message[]
+  padState: PADState
+  memory: ParentMemory
+  isOnline: boolean
+  lastCheckSendAt: number
+}
+
 export interface ParentSession {
   parentId: ParentId
   messages: Message[]
@@ -61,6 +69,7 @@ export interface ParentSession {
   phase2Scores: ScoreResult[]
   phase1Done: boolean
   phase2Done: boolean
+  phase2StartSnapshot: PhaseStartSnapshot | null
   isOnline: boolean          // Phase 1: false, Phase 2: true
   lastCheckSendAt: number    // timestamp of last checkSend call
 }
@@ -81,6 +90,7 @@ export interface GameSession {
 
 export interface PersonaConfig {
   name: string
+  childRelationLabel?: string
   age: number
   occupation: string
   personality: string
@@ -121,6 +131,7 @@ export interface TechniqueInfo {
 export interface ScenarioConfig {
   name: ScenarioName
   difficulty: Difficulty
+  parentIds: ParentId[]
   title: string
   summary: string
   storyLine: string

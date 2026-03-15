@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { useGameStore } from '@/store/game-store'
+import { ConfirmNavigationDialog } from '@/components/shared/confirm-navigation-dialog'
 import { getScenarioConfig } from '@/data/scenarios'
 import { ScoreCard, TotalScoreDisplay } from '@/components/game/score-card'
 import { SkillRadarChart } from '@/components/game/radar-chart'
@@ -20,6 +21,7 @@ export default function Phase1ScorePage() {
   const setPhaseScores = useGameStore(s => s.setPhaseScores)
   const setPhase = useGameStore(s => s.setPhase)
   const setParentOnline = useGameStore(s => s.setParentOnline)
+  const resetParentPhaseState = useGameStore(s => s.resetParentPhaseState)
 
   const [scores, setScores] = useState<ScoreResult[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -63,28 +65,43 @@ export default function Phase1ScorePage() {
   }, [session, name, difficulty, activeParentForScore, setPhaseScores])
 
   const handleNextPhase = () => {
-    setPhase(2)
     setParentOnline('A')
     setParentOnline('B')
+    setPhase(2)
+    router.push(`/scenario/${name}/${difficulty}/${params.uuid}/chat`)
+  }
+
+  const handleRetryPhase1 = () => {
+    resetParentPhaseState('A', 1)
+    resetParentPhaseState('B', 1)
+    setPhase(1)
     router.push(`/scenario/${name}/${difficulty}/${params.uuid}/chat`)
   }
 
   return (
-    <main className="min-h-screen bg-background py-16 px-6 md:px-16">
+    <main className="min-h-svh bg-background py-16 px-6 md:px-16">
       <div className="max-w-2xl mx-auto">
-        <button
-          onClick={() => router.push(`/scenario/${name}/${difficulty}/${params.uuid}/chat`)}
-          className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-black transition-colors mb-10"
-        >
-          <ArrowLeft size={14} />
-          回到聊天
-        </button>
+        <ConfirmNavigationDialog
+          title="回到聊天頁？"
+          description="離開評分頁後，這次評分結果仍會保留，但你會先回到目前的對話流程。"
+          confirmLabel="回到聊天"
+          onConfirm={() => router.push(`/scenario/${name}/${difficulty}/${params.uuid}/chat`)}
+          trigger={
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-black transition-colors mb-10"
+            >
+              <ArrowLeft size={14} />
+              回到聊天
+            </button>
+          }
+        />
 
         <div className="mb-8">
-          <p className="text-xs tracking-widest text-muted font-[var(--font-dm-sans)] uppercase mb-2">
+          <p className="text-xs tracking-widest text-muted font-(--font-dm-sans) uppercase mb-2">
             Phase 1 結算
           </p>
-          <h1 className="font-[var(--font-chiron)] text-3xl font-bold text-black">
+          <h1 className="font-(--font-chiron) text-3xl text-black">
             首訊通知評分
           </h1>
         </div>
@@ -93,7 +110,7 @@ export default function Phase1ScorePage() {
           <div className="bg-white rounded-xl p-10 shadow-soft text-center">
             <div className="flex justify-center gap-1.5 mb-3">
               {[0, 1, 2].map(i => (
-                <span key={i} className="w-2 h-2 bg-[#2A3D66] rounded-full animate-bounce" style={{ animationDelay: `${i * 150}ms` }} />
+                <span key={i} className="w-2 h-2 bg-secondary rounded-full animate-bounce" style={{ animationDelay: `${i * 150}ms` }} />
               ))}
             </div>
             <p className="text-sm text-muted">AI 正在評分中，請稍候…</p>
@@ -124,17 +141,18 @@ export default function Phase1ScorePage() {
         <div className="space-y-3">
           <button
             onClick={handleNextPhase}
-            className="w-full py-3.5 bg-[#2A3D66] text-white rounded-xl font-medium hover:bg-[#1e2d4f] transition-colors"
+            className="w-full py-3.5 bg-secondary text-white rounded-xl font-medium hover:bg-[#1e2d4f] transition-colors"
           >
             進入 Phase 2 →
           </button>
           <button
-            onClick={() => router.push(`/scenario/${name}/${difficulty}/${params.uuid}/chat`)}
-            className="w-full py-3.5 bg-white text-[#2A3D66] rounded-xl font-medium border border-[#2A3D66]/20 hover:bg-background transition-colors"
+            onClick={handleRetryPhase1}
+            className="w-full py-3.5 bg-white text-secondary rounded-xl font-medium border border-secondary/20 hover:bg-background transition-colors"
           >
             再練一次 Phase 1
           </button>
           <button
+            type="button"
             onClick={() => router.push('/scenario')}
             className="w-full py-3 text-muted text-sm hover:text-black transition-colors"
           >

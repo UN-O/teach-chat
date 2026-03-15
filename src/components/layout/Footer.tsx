@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { navText, siteText } from "@/data/text";
 
 const footerLinks = [
@@ -10,6 +13,12 @@ const footerLinks = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/scenario/") && pathname !== "/scenario") {
+    return null;
+  }
+
   return (
     <footer className="bg-primary text-white">
       <div className="max-w-6xl mx-auto px-6 md:px-16 py-16">

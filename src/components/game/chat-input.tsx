@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, type KeyboardEvent, type ChangeEvent } from 'react'
+import { useEffect, useRef, type KeyboardEvent, type ChangeEvent } from 'react'
 import { Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -22,18 +22,34 @@ export function ChatInput({
   disabled,
 }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const isComposingRef = useRef(false)
+  const lastCompositionEndAtRef = useRef(0)
+
+  const resizeTextarea = () => {
+    const el = textareaRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight}px`
+  }
+
+  useEffect(() => {
+    resizeTextarea()
+  }, [value])
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value)
-    // Auto-resize
-    const el = textareaRef.current
-    if (el) {
-      el.style.height = 'auto'
-      el.style.height = `${Math.min(el.scrollHeight, 120)}px`
-    }
+    resizeTextarea()
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    const nativeEvent = e.nativeEvent as KeyboardEvent<HTMLTextAreaElement>['nativeEvent'] & { isComposing?: boolean }
+    const justEndedComposition = Date.now() - lastCompositionEndAtRef.current < 120
+
+    // Prevent submit when user is selecting candidates in CJK IME.
+    if (isComposingRef.current || nativeEvent.isComposing || nativeEvent.keyCode === 229 || justEndedComposition) {
+      return
+    }
+
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       if (value.trim() && !isLoading && !disabled) {
@@ -49,26 +65,32 @@ export function ChatInput({
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
+        onCompositionStart={() => {
+          isComposingRef.current = true
+        }}
+        onCompositionEnd={() => {
+          isComposingRef.current = false
+          lastCompositionEndAtRef.current = Date.now()
+        }}
         placeholder={placeholder}
         disabled={disabled || isLoading}
         rows={1}
         className={cn(
           'flex-1 resize-none rounded-xl border border-gray-200 px-4 py-2.5',
           'text-sm leading-relaxed outline-none transition-colors',
-          'focus:border-[#4A90E2] focus:ring-1 focus:ring-[#4A90E2]/20',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
-          'max-h-[120px] overflow-y-auto',
+          'focus:border-accent-alt focus:ring-1 focus:ring-accent-alt/20',
+          'disabled:opacity-50 disabled:cursor-not-allowed min-h-12',
+          'overflow-hidden',
         )}
-        style={{ height: '40px' }}
       />
       <button
         onClick={onSubmit}
         disabled={!value.trim() || isLoading || disabled}
         className={cn(
-          'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center',
+          'shrink-0 size-12 rounded-xl flex items-center justify-center',
           'transition-colors',
           value.trim() && !isLoading && !disabled
-            ? 'bg-[#4A90E2] text-white hover:bg-[#3a7fd2]'
+            ? 'bg-accent-alt text-white hover:bg-[#3a7fd2]'
             : 'bg-gray-100 text-muted cursor-not-allowed',
         )}
       >

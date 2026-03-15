@@ -1,16 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRouter, useParams } from 'next/navigation'
 import { useGameStore } from '@/store/game-store'
 import type { ScenarioName, Difficulty, PlayerAvatar, EducationLevel, TeacherRole, PlayerProfile } from '@/types'
 import { cn } from '@/lib/utils'
 
-const avatarEmoji: Record<PlayerAvatar, string> = {
-  1: '👩‍🏫',
-  2: '👨‍🏫',
-  3: '🧑‍🏫',
-  4: '👩‍💼',
+const avatarSrc: Record<PlayerAvatar, string> = {
+  1: '/images/avatars/1.svg',
+  2: '/images/avatars/2.svg',
+  3: '/images/avatars/3.svg',
+  4: '/images/avatars/4.svg',
 }
 
 const educationOptions: { value: EducationLevel; label: string }[] = [
@@ -48,36 +50,55 @@ export default function InitPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-6 py-16">
-      <div className="bg-white rounded-2xl shadow-md p-8 md:p-10 w-full max-w-md">
+    <main className="h-svh overflow-hidden bg-background flex items-center justify-center px-4 py-4 sm:px-6 sm:py-6">
+      <div className="bg-white rounded-2xl shadow-md p-6 sm:p-8 md:p-10 w-full max-w-md max-h-full overflow-hidden">
         <h1 className="font-[var(--font-chiron)] text-2xl font-bold text-black mb-2">
           設定你的角色
         </h1>
-        <p className="text-sm text-muted mb-8">選擇頭像並填入你的資料，開始練習前的準備。</p>
+        <p className="text-sm text-muted mb-5 sm:mb-8">選擇頭像並填入你的資料，開始練習前的準備。</p>
 
         {/* Avatar */}
-        <div className="mb-6">
+        <div className="mb-5 sm:mb-6">
           <p className="text-xs text-muted mb-3 font-[var(--font-dm-sans)]">選擇頭像</p>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <button
+              onClick={() => setAvatar(a => (a === 1 ? 4 : (a - 1) as PlayerAvatar))}
+              className="p-2 rounded-lg transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 text-muted" />
+            </button>
+            <div className="relative aspect-square w-full max-w-48 sm:max-w-56 md:max-w-64 rounded-2xl bg-background ring-2 ring-secondary overflow-hidden">
+              <Image
+                src={avatarSrc[avatar]}
+                alt={`avatar ${avatar}`}
+                fill
+                sizes="(max-width: 640px) calc(100vw - 10rem), 16rem"
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <button
+              onClick={() => setAvatar(a => (a === 4 ? 1 : (a + 1) as PlayerAvatar))}
+              className="p-2 rounded-lg transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 text-muted" />
+            </button>
+          </div>
+          <div className="flex justify-center gap-1.5 mt-3">
             {([1, 2, 3, 4] as PlayerAvatar[]).map(a => (
               <button
                 key={a}
                 onClick={() => setAvatar(a)}
                 className={cn(
-                  'aspect-square rounded-xl flex items-center justify-center text-3xl transition-all',
-                  avatar === a
-                    ? 'bg-[#2A3D66]/10 ring-2 ring-[#2A3D66] scale-105'
-                    : 'bg-background hover:bg-gray-100',
+                  'w-1.5 h-1.5 rounded-full transition-colors',
+                  avatar === a ? 'bg-secondary' : 'bg-gray-300',
                 )}
-              >
-                {avatarEmoji[a]}
-              </button>
+              />
             ))}
           </div>
         </div>
 
         {/* Name */}
-        <div className="mb-6">
+        <div className="mb-5 sm:mb-6">
           <label className="text-xs text-muted font-[var(--font-dm-sans)] block mb-2">你的名字</label>
           <input
             type="text"
@@ -89,7 +110,7 @@ export default function InitPage() {
         </div>
 
         {/* Education Level */}
-        <div className="mb-6">
+        <div className="mb-5 sm:mb-6">
           <p className="text-xs text-muted mb-3 font-[var(--font-dm-sans)]">教育場域</p>
           <div className="flex gap-2">
             {educationOptions.map(opt => (
@@ -110,7 +131,7 @@ export default function InitPage() {
         </div>
 
         {/* Role */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <p className="text-xs text-muted mb-3 font-[var(--font-dm-sans)]">身份</p>
           <div className="grid grid-cols-2 gap-2">
             {roleOptions.map(opt => (

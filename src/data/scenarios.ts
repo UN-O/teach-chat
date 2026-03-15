@@ -1,8 +1,80 @@
-import type { ScenarioConfig, ScenarioName, Difficulty } from '@/types'
+import type { ScenarioConfig, ScenarioName, Difficulty, PlayerAvatar } from '@/types'
+
+type IntroEventFrame = {
+  image: string
+  caption: string
+}
+
+export type ScenarioIntroStep = {
+  label: string
+  content: string
+  image?: string
+  frames?: IntroEventFrame[]
+}
+
+const introEventFramesMap: Record<string, IntroEventFrame[]> = {
+  'fight-basic': [
+    {
+      image: '/images/scenarios/step-event/1-1.svg',
+      caption: '下課時間，兩位學生因小事起口角，現場氣氛快速升溫。',
+    },
+    {
+      image: '/images/scenarios/step-event/1-2.svg',
+      caption: '情緒爆發後出現推擠，受傷學生已由老師帶往保健室處置。',
+    },
+    {
+      image: '/images/scenarios/step-event/1-3.svg',
+      caption: '放學前，你需要通知雙方家長並維持中立，避免訊息再度升溫。',
+    },
+  ],
+  'fight-advanced': [
+    {
+      image: '/images/scenarios/step-event/2-1.svg',
+      caption: '跨班衝突在操場爆發，現場混亂且資訊仍不完整。',
+    },
+    {
+      image: '/images/scenarios/step-event/2-2.svg',
+      caption: '其中一位學生傷勢較重，學校已緊急安排就醫處理。',
+    },
+    {
+      image: '/images/scenarios/step-event/2-3.svg',
+      caption: '你必須在高壓下同步溝通，先穩住家長情緒再安排後續。',
+    },
+  ],
+  'abnormal-basic': [
+    {
+      image: '/images/scenarios/step-event/3-1.svg',
+      caption: '最近兩週，學生在課堂上頻繁發呆、趴桌，學習狀態明顯改變。',
+    },
+    {
+      image: '/images/scenarios/step-event/3-2.svg',
+      caption: '作業缺交與用餐減少的情況持續，老師開始擔心背後原因。',
+    },
+    {
+      image: '/images/scenarios/step-event/3-3.svg',
+      caption: '你需要主動聯繫家長，以關心語氣開啟對話並建立合作。',
+    },
+  ],
+  'abnormal-advanced': [
+    {
+      image: '/images/scenarios/step-event/4-1.svg',
+      caption: '學生在課堂上突然情緒崩潰，現場同學也受到驚嚇。',
+    },
+    {
+      image: '/images/scenarios/step-event/4-2.svg',
+      caption: '輔導老師已介入評估，判斷需要盡快安排更完整的支持。',
+    },
+    {
+      image: '/images/scenarios/step-event/4-3.svg',
+      caption: '你要在資訊有限時先安撫家長，並引導溝通轉向面談。',
+    },
+  ],
+}
 
 const fightBasic: ScenarioConfig = {
   name: 'fight',
   difficulty: 'basic',
+  parentIds: ['A', 'B'],
   title: '學生打架（初階）',
   summary: '班級衝突事件通知',
   storyLine: `週三下午第二節下課，五年二班的小傑與小宇在走廊因借橡皮擦起口角。小傑情緒激動，一把推倒小宇，小宇跌坐在地，右膝蓋擦傷。班上同學立刻大叫，引來走廊巡視的王老師。王老師將兩人帶至輔導室冷靜，確認小宇傷勢後送保健室消毒包紮，傷口不深無需就醫。事後在王老師見證下，小傑主動向小宇道歉，兩人握手和解。放學前，王老師需分別透過 LINE 通知小傑家長（施暴方）與小宇家長（受傷方），說明事件經過與學校的處理方式。`,
@@ -20,6 +92,7 @@ const fightBasic: ScenarioConfig = {
   parents: {
     A: {
       name: '陳建國',
+      childRelationLabel: '小傑爸爸',
       age: 44,
       occupation: '工廠領班，勞工階層，國中畢業',
       personality: '直接、容易衝動，對孩子打架感到丟臉但也會護短，教育觀念偏「男生打架很正常」',
@@ -35,6 +108,7 @@ const fightBasic: ScenarioConfig = {
     },
     B: {
       name: '林美慧',
+      childRelationLabel: '小宇媽媽',
       age: 38,
       occupation: '國小教師，中產階層，大學畢業',
       personality: '理性但護子心切，本身是老師所以會從教育角度思考，但孩子受傷時仍會情緒化',
@@ -130,6 +204,7 @@ const fightBasic: ScenarioConfig = {
 const fightAdvanced: ScenarioConfig = {
   name: 'fight',
   difficulty: 'advanced',
+  parentIds: ['A', 'B'],
   title: '學生打架（進階）',
   summary: '跨班衝突，需就醫',
   storyLine: `週四下午體育課後，六年甲班的小明與六年乙班的小強在操場起衝突，兩人互毆，小強鼻樑撞傷流血，送至保健室後確認需要就醫縫合。事件涉及跨班，乙班老師林老師需與甲班張老師協調。小強家長已趕到學校陪同就醫，林老師需同步通知小明家長事件狀況，並在資訊不完整的情況下說明現況。`,
@@ -148,6 +223,7 @@ const fightAdvanced: ScenarioConfig = {
   parents: {
     A: {
       name: '黃志明',
+      childRelationLabel: '小明爸爸',
       age: 47,
       occupation: '工地主任，粗獷型，高中畢業',
       personality: '急躁、強勢，對學校管理有不滿，但私下其實很在乎孩子',
@@ -163,6 +239,7 @@ const fightAdvanced: ScenarioConfig = {
     },
     B: {
       name: '蔡雅玲',
+      childRelationLabel: '小強媽媽',
       age: 41,
       occupation: '全職媽媽，曾任護理師',
       personality: '細心敏感，因孩子受傷非常心疼，容易哭泣，但也會追問細節',
@@ -252,6 +329,7 @@ const fightAdvanced: ScenarioConfig = {
 const abnormalBasic: ScenarioConfig = {
   name: 'abnormal',
   difficulty: 'basic',
+  parentIds: ['A'],
   title: '學生失常（初階）',
   summary: '學生表現異常，老師主動聯繫家長',
   storyLine: `五年甲班的小芳近兩週來上課時頻繁趴桌、作業缺交、在校吃飯明顯減少。導師陳老師多次觀察後，決定透過 LINE 聯繫小芳媽媽，了解家裡是否有狀況，並表達學校的觀察與關心。`,
@@ -266,6 +344,7 @@ const abnormalBasic: ScenarioConfig = {
   parents: {
     A: {
       name: '吳淑芬',
+      childRelationLabel: '小芳媽媽',
       age: 40,
       occupation: '百貨公司專櫃人員，中產階層',
       personality: '外表溫和、習慣迴避衝突，實際上對孩子的狀況感到焦慮但不知如何開口',
@@ -281,6 +360,7 @@ const abnormalBasic: ScenarioConfig = {
     },
     B: {
       name: '吳淑芬',  // 只有一位家長的情境，B 與 A 相同
+      childRelationLabel: '小芳媽媽',
       age: 40,
       occupation: '百貨公司專櫃人員，中產階層',
       personality: '外表溫和、習慣迴避衝突',
@@ -361,6 +441,7 @@ const abnormalBasic: ScenarioConfig = {
 const abnormalAdvanced: ScenarioConfig = {
   name: 'abnormal',
   difficulty: 'advanced',
+  parentIds: ['A'],
   title: '學生失常（進階）',
   summary: '學生情緒危機，輔導員介入',
   storyLine: `國二乙班的小翔在課堂上突然情緒崩潰大哭，被帶至輔導室後表示在家有很大的壓力，但拒絕說詳情。輔導老師評估後建議需要專業介入，班導師賴老師需在資訊有限的情況下，通知小翔媽媽孩子今天的狀況，並引導家長理解需要專業協助。`,
@@ -376,6 +457,7 @@ const abnormalAdvanced: ScenarioConfig = {
   parents: {
     A: {
       name: '何秀蘭',
+      childRelationLabel: '小翔媽媽',
       age: 45,
       occupation: '會計，中產階層，嚴謹型',
       personality: '焦慮型家長，對孩子管控較嚴，聽到孩子情緒崩潰會先進入防禦模式',
@@ -391,6 +473,7 @@ const abnormalAdvanced: ScenarioConfig = {
     },
     B: {
       name: '何秀蘭',
+      childRelationLabel: '小翔媽媽',
       age: 45,
       occupation: '會計，中產階層，嚴謹型',
       personality: '焦慮型家長',
@@ -492,6 +575,33 @@ export function getScenarioConfig(
 
 export function getAllScenarios(): ScenarioConfig[] {
   return Object.values(scenarios)
+}
+
+export function getScenarioIntroSteps(
+  name: ScenarioName,
+  difficulty: Difficulty,
+  playerName: string,
+  playerAvatar: PlayerAvatar,
+): ScenarioIntroStep[] {
+  const scenario = getScenarioConfig(name, difficulty)
+  const eventKey = `${name}-${difficulty}`
+
+  return [
+    {
+      label: '事件發生',
+      content: scenario.storyLine,
+      frames: introEventFramesMap[eventKey] ?? [],
+    },
+    {
+      label: '老師面對的挑戰',
+      image: `/images/avatars/think/${playerAvatar}.svg`,
+      content: `${playerName} 老師，放學前你需要透過 LINE 通知家長今天發生的事情。\n\n這不是一件容易的事——你需要讓家長知道發生了什麼，同時保持冷靜、不激化情緒、不在 LINE 上定責，還要給家長安心感。`,
+    },
+    {
+      label: '你的任務',
+      content: `本次訓練共分兩個關卡：\n\n**Phase 1**：你主動傳送首訊給家長。這個階段家長還沒回應，你需要把必要資訊都說清楚。\n\n**Phase 2**：家長開始回覆，你需要應對他們的問題和情緒。\n\n完成每個關卡後，系統會根據你的溝通技巧給你評分。加油！`,
+    },
+  ]
 }
 
 export const scenarioMeta = {

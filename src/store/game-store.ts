@@ -13,6 +13,7 @@ import type {
   ScoreResult,
   PADState,
   ParentMemory,
+  PhaseStartSnapshot,
   PlayerProfile,
   ScenarioName,
   Difficulty,
@@ -42,6 +43,7 @@ interface GameStore {
   updateMissions: (parentId: ParentId, phase: Phase, missions: MissionItem[]) => void
   setPhaseScores: (parentId: ParentId, phase: Phase, scores: ScoreResult[]) => void
   setPhaseDone: (parentId: ParentId, phase: Phase) => void
+  resetParentPhaseState: (parentId: ParentId, phase: Phase) => void
 
   // Phase & State
   setPhase: (phase: Phase) => void
@@ -79,9 +81,20 @@ function createInitialParentSession(parentId: ParentId, scenarioName: ScenarioNa
     phase2Scores: [] as ScoreResult[],
     phase1Done: false,
     phase2Done: false,
+    phase2StartSnapshot: null as PhaseStartSnapshot | null,
     isOnline: false,
     lastCheckSendAt: 0,
   }
+}
+
+function createPhaseMissions(parentId: ParentId, phase: Phase, scenarioName: ScenarioName, difficulty: Difficulty): MissionItem[] {
+  const scenario = getScenarioConfig(scenarioName, difficulty)
+  const source = phase === 1 ? scenario.phase1.missions[parentId] : scenario.phase2.missions[parentId]
+  return source.map(m => ({
+    id: m.id,
+    label: m.label,
+    completed: false,
+  }))
 }
 
 export const useGameStore = create<GameStore>()(
@@ -227,6 +240,19 @@ export const useGameStore = create<GameStore>()(
         set(state => {
           if (!state.session) return state
           const key = phase === 1 ? 'phase1Missions' : 'phase2Missions'
+          const existingMissions = state.session.parents[parentId][key]
+          const incomingMap = new Map(missions.map(m => [m.id, m]))
+          const mergedMissions = existingMissions.map(existing => {
+            const incoming = incomingMap.get(existing.id)
+            if (!incoming) return existing
+            return {
+              ...existing,
+              ...incoming,
+              // Once a mission is completed, never roll it back to false.
+              completed: existing.completed || incoming.completed,
+            }
+          })
+
           return {
             session: {
               ...state.session,
@@ -234,7 +260,7 @@ export const useGameStore = create<GameStore>()(
                 ...state.session.parents,
                 [parentId]: {
                   ...state.session.parents[parentId],
-                  [key]: missions,
+                  [key]: mergedMissions,
                 },
               },
             },
@@ -280,8 +306,94 @@ export const useGameStore = create<GameStore>()(
         })
       },
 
+      resetParentPhaseState: (parentId, phase) => {
+        set(state => {
+          if (!state.session) return state
+          const session = state.session
+          const scenario = getScenarioConfig(session.scenarioName, session.difficulty)
+          const persona = scenario.parents[parentId]
+          const parentSession = session.parents[parentId]
+          const phaseMissionKey = phase === 1 ? 'phase1Missions' : 'phase2Missions'
+          const phaseScoreKey = phase === 1 ? 'phase1Scores' : 'phase2Scores'
+          const phaseDoneKey = phase === 1 ? 'phase1Done' : 'phase2Done'
+          const phase2Snapshot = parentSession.phase2StartSnapshot
+
+          const restoredState = phase === 2 && phase2Snapshot
+            ? {
+                messages: phase2Snapshot.messages,
+                padState: phase2Snapshot.padState,
+                memory: phase2Snapshot.memory,
+                isOnline: phase2Snapshot.isOnline,
+                lastCheckSendAt: phase2Snapshot.lastCheckSendAt,
+              }
+            : {
+                messages: [] as Message[],
+                padState: { ...persona.initialPAD },
+                memory: { events: '', teacherImpression: '' } as ParentMemory,
+                isOnline: false,
+                lastCheckSendAt: 0,
+              }
+
+          return {
+            session: {
+              ...session,
+              parents: {
+                ...session.parents,
+                [parentId]: {
+                  ...parentSession,
+                  messages: restoredState.messages,
+                  pendingSeq: [],
+                  padState: restoredState.padState,
+                  memory: restoredState.memory,
+                  isOnline: restoredState.isOnline,
+                  lastCheckSendAt: restoredState.lastCheckSendAt,
+                  [phaseMissionKey]: createPhaseMissions(parentId, phase, session.scenarioName, session.difficulty),
+                  [phaseScoreKey]: [],
+                  [phaseDoneKey]: false,
+                },
+              },
+            },
+          }
+        })
+      },
+
       setPhase: (phase) => {
-        set(state => state.session ? { session: { ...state.session, currentPhase: phase } } : state)
+        set(state => {
+          if (!state.session) return state
+
+          const nextParents = phase === 2
+            ? {
+                A: {
+                  ...state.session.parents.A,
+                  phase2StartSnapshot: {
+                    messages: [...state.session.parents.A.messages],
+                    padState: { ...state.session.parents.A.padState },
+                    memory: { ...state.session.parents.A.memory },
+                    isOnline: state.session.parents.A.isOnline,
+                    lastCheckSendAt: state.session.parents.A.lastCheckSendAt,
+                  },
+                },
+                B: {
+                  ...state.session.parents.B,
+                  phase2StartSnapshot: {
+                    messages: [...state.session.parents.B.messages],
+                    padState: { ...state.session.parents.B.padState },
+                    memory: { ...state.session.parents.B.memory },
+                    isOnline: state.session.parents.B.isOnline,
+                    lastCheckSendAt: state.session.parents.B.lastCheckSendAt,
+                  },
+                },
+              }
+            : state.session.parents
+
+          return {
+            session: {
+              ...state.session,
+              currentPhase: phase,
+              parents: nextParents,
+            },
+          }
+        })
       },
 
       setParentOnline: (parentId) => {
