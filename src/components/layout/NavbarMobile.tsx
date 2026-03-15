@@ -24,24 +24,24 @@ export function NavbarMobile() {
         className="flex flex-col justify-center items-center w-8 h-8 gap-1.5 cursor-pointer"
       >
         <span
-          className={`block w-6 h-0.5 bg-[var(--color-primary)] transition-all duration-300 ${
+          className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${
             open ? "rotate-45 translate-y-2" : ""
           }`}
         />
         <span
-          className={`block w-6 h-0.5 bg-[var(--color-primary)] transition-all duration-300 ${
+          className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${
             open ? "opacity-0" : ""
           }`}
         />
         <span
-          className={`block w-6 h-0.5 bg-[var(--color-primary)] transition-all duration-300 ${
+          className={`block w-6 h-0.5 bg-primary transition-all duration-300 ${
             open ? "-rotate-45 -translate-y-2" : ""
           }`}
         />
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 right-0 bg-white shadow-[0_8px_24px_0_rgba(0,0,0,0.12)] py-6 px-6 flex flex-col gap-4 z-50">
+        <div className="absolute top-full left-0 right-0 bg-white shadow-lifted py-6 px-6 flex flex-col gap-4 z-50">
           {navLinks.map((link) => (
             <NavLink
               key={link.href}
@@ -55,7 +55,7 @@ export function NavbarMobile() {
           <Link
             href="/scenario"
             onClick={() => setOpen(false)}
-            className="mt-2 inline-flex items-center justify-center h-11 px-8 bg-[var(--color-secondary)] text-white font-[var(--font-en)] text-sm font-medium tracking-wider uppercase rounded-lg"
+            className="mt-2 inline-flex items-center justify-center h-11 px-8 bg-secondary text-white font-en text-sm font-medium tracking-wider uppercase rounded-lg"
           >
             {navText.startPractice}
           </Link>

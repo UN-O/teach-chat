@@ -19,12 +19,12 @@ Bootstrap the Next.js 14 project with the full SOA folder structure, dependencie
 - [x] shadcn/ui configured (`neutral` base, RSC mode, `lucide` icons)
 - [x] `src/lib/utils.ts` — `cn()` helper
 - [x] `src/lib/fetch.ts` — `ky` fetcher for swr
-- [ ] Create missing folder scaffold: `src/services/`, `src/data/`, `src/types/`
-- [ ] Create stub service files: `ScenarioService.ts`, `ScoringService.ts`, `PolishService.ts`
+- [x] Create missing folder scaffold: `src/services/`, `src/data/`, `src/types/`
+- [x] Create stub service files: `ScenarioService.ts`, `ScoringService.ts`, `PolishService.ts`
 - [ ] Create `src/types/index.ts` — shared interfaces (`Scenario`, `Message`, `ScoreResult`, etc.)
 - [ ] Create `app/api/chat/route.ts` — streaming route handler stub using Vercel AI SDK
-- [ ] Add `Noto Sans TC` via `next/font/google` in root layout (alongside Geist)
-- [ ] Update layout `lang` to `zh-TW`
+- [x] Add `Noto Sans TC` via `next/font/google` in root layout (alongside Geist)
+- [x] Update layout `lang` to `zh-TW`
 - [ ] Create `.env.example` with `ANTHROPIC_API_KEY` and `NEXT_PUBLIC_APP_URL`
 - [ ] Add ESLint config aligned with CLAUDE.md rules
 - [ ] Configure Jest + Playwright (`--chrome`)

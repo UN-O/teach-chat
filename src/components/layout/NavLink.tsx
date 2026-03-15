@@ -20,11 +20,11 @@ export function NavLink({ href, children, className, onClick }: NavLinkProps) {
       href={href}
       onClick={onClick}
       className={cn(
-        "font-[var(--font-en)] text-sm font-medium tracking-wider",
-        "text-[var(--color-primary)] border-b-2 border-transparent",
+        "font-en text-sm font-medium tracking-wider",
+        "text-primary border-b-2 border-transparent",
         "transition-colors duration-200 pb-0.5",
-        isActive && "border-[var(--color-primary)]",
-        !isActive && "hover:border-[var(--color-primary)]",
+        isActive && "border-primary",
+        !isActive && "hover:border-primary",
         className
       )}
     >

@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Eyebrow, H2 } from "@/components/ui/typography";
 import { homeText } from "@/data/text";
 
 export function HookSection() {
     return (
-        <section className="bg-[var(--color-surface)]">
+        <section className="bg-surface">
             {/* Scenario block */}
             <div className="py-14 md:py-24">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_2fr] items-center p-5 sm:p-6 md:p-0 gap-10">
-                    <div className="order-2 md:order-1 bg-[var(--color-background)] md:bg-transparent rounded-xl md:rounded-none p-0">
+                    <div className="order-2 md:order-1 bg-background md:bg-transparent rounded-xl md:rounded-none p-0">
                         <img
                             src="/images/hook-phone.svg"
                             alt="老師手握手機，家長 LINE 訊息涌現"
@@ -18,13 +19,13 @@ export function HookSection() {
                     </div>
                     <div className="order-1 md:order-2 w-full md:rounded-none">
                         <div className="pt-2 w-full md:max-w-md space-y-6">
-                            <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-secondary)]">
+                            <Eyebrow className="text-secondary">
                                 {homeText.hook.scenario.eyebrow}
-                            </p>
-                            <h2 className="font-[var(--font-display)] text-[1.8rem] sm:text-3xl md:text-4xl font-bold leading-[1.2] text-[var(--color-primary)]">
+                            </Eyebrow>
+                            <H2 size="lg" className="text-[1.8rem] sm:text-3xl md:text-4xl text-primary">
                                 {homeText.hook.scenario.h2}
-                            </h2>
-                            <p className="font-[var(--font-body)] text-base leading-[1.7] text-[var(--color-primary)]/80 max-w-[55ch]">
+                            </H2>
+                            <p className="font-body text-base leading-[1.7] text-primary/80 max-w-[55ch]">
                                 {homeText.hook.scenario.body}
                             </p>
                             <div className="rounded-xl bg-white">
@@ -54,12 +55,12 @@ export function HookSection() {
                 </div>
             </div>
 
-            <hr className="border-t border-[var(--color-muted)] opacity-20" />
+            <hr className="border-t border-muted opacity-20" />
 
             {/* Polish block */}
             <div className="py-14 md:py-24">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_2fr] items-center p-5 sm:p-6 md:p-0 gap-10">
-                    <div className="order-2 md:order-1 bg-[var(--color-background)] md:bg-transparent rounded-xl md:rounded-none p-0">
+                    <div className="order-2 md:order-1 bg-background md:bg-transparent rounded-xl md:rounded-none p-0">
                         <img
                             src="/images/feature-polish.svg"
                             alt="訊息潤飾 Before/After 對比示意"
@@ -68,13 +69,13 @@ export function HookSection() {
                     </div>
                     <div className="order-1 md:order-2 w-full md:rounded-none">
                         <div className="pt-2 w-full md:max-w-md space-y-6">
-                        <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-secondary)]">
+                        <Eyebrow className="text-secondary">
                             {homeText.hook.polish.eyebrow}
-                        </p>
-                        <h2 className="font-[var(--font-display)] text-[1.8rem] sm:text-3xl md:text-4xl font-bold leading-[1.2] text-[var(--color-primary)]">
+                        </Eyebrow>
+                        <H2 size="lg" className="text-[1.8rem] sm:text-3xl md:text-4xl text-primary">
                             {homeText.hook.polish.h2}
-                        </h2>
-                        <p className="font-[var(--font-body)] text-base leading-[1.7] text-[var(--color-primary)]/80 max-w-[55ch]">
+                        </H2>
+                        <p className="font-body text-base leading-[1.7] text-primary/80 max-w-[55ch]">
                             {homeText.hook.polish.body}
                         </p>
                             <div className="rounded-xl bg-white">

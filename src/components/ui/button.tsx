@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const buttonVariants = cva(
   [
     "inline-flex items-center justify-center",
-    "font-[var(--font-en)] text-sm font-medium tracking-wider uppercase",
+    "font-en text-sm font-medium tracking-wider uppercase",
     "rounded-lg transition-all duration-200",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
     "disabled:pointer-events-none disabled:opacity-50",
@@ -16,15 +16,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--color-primary)] text-white hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.18)] hover:-translate-y-px active:translate-y-0",
+          "bg-primary text-white hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.18)] hover:-translate-y-px active:translate-y-0",
         secondary:
-          "bg-white text-[var(--color-primary)] shadow-[0_2px_8px_0_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.12)] hover:-translate-y-px active:translate-y-0",
+          "bg-white text-primary shadow-soft hover:shadow-md hover:-translate-y-px active:translate-y-0",
         accent:
-          "bg-[var(--color-accent)] text-white hover:shadow-[0_4px_16px_0_rgba(255,90,95,0.35)] hover:-translate-y-px active:translate-y-0",
+          "bg-accent text-white hover:shadow-[0_4px_16px_0_rgba(255,90,95,0.35)] hover:-translate-y-px active:translate-y-0",
         deep:
-          "bg-[var(--color-secondary)] text-white hover:shadow-[0_4px_16px_0_rgba(42,61,102,0.28)] hover:-translate-y-px active:translate-y-0",
+          "bg-secondary text-white hover:shadow-[0_4px_16px_0_rgba(42,61,102,0.28)] hover:-translate-y-px active:translate-y-0",
         ghost:
-          "bg-transparent text-[var(--color-secondary)] underline-offset-4 hover:underline hover:bg-transparent",
+          "bg-transparent text-secondary underline-offset-4 hover:underline hover:bg-transparent",
       },
       size: {
         sm: "h-8 px-5 text-xs",

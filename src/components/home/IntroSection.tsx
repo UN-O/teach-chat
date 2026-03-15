@@ -1,51 +1,52 @@
+import { Eyebrow, H2, H3 } from "@/components/ui/typography";
 import { homeText } from "@/data/text";
 
 export function IntroSection() {
   return (
-    <section id="intro" className="py-24 bg-[var(--color-background)]">
+    <section id="intro" className="py-24 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="mb-16 space-y-4">
-          <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-secondary)]">
+          <Eyebrow className="text-secondary">
             {homeText.intro.eyebrow}
-          </p>
-          <h2 className="font-[var(--font-display)] text-4xl md:text-5xl font-bold leading-[1.15] text-[var(--color-primary)]">
+          </Eyebrow>
+          <H2 size="xl" className="text-primary">
             {homeText.intro.h2}
-          </h2>
+          </H2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 stagger">
           {/* Feature Card 1 */}
-          <div className="bg-white rounded-xl p-8 space-y-3 shadow-[0_2px_8px_0_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200">
-            <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-muted)]">
+          <div className="bg-white rounded-xl p-8 space-y-3 shadow-soft hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <Eyebrow className="text-muted">
               {homeText.intro.scenario.eyebrow}
-            </p>
+            </Eyebrow>
             <img
               src="/images/feature-chat.svg"
               alt="情境訓練聊天室截圖"
               className="w-full h-auto object-contain mix-blend-multiply rounded-lg overflow-hidden"
             />
-            <h3 className="font-[var(--font-display)] text-xl font-bold leading-snug text-[var(--color-primary)]">
+            <H3 size="xl" className="text-primary">
               {homeText.intro.scenario.h3}
-            </h3>
-            <p className="font-[var(--font-body)] text-sm leading-[1.7] text-[var(--color-primary)]/70">
+            </H3>
+            <p className="font-body text-sm leading-[1.7] text-primary/70">
               {homeText.intro.scenario.body}
             </p>
           </div>
 
           {/* Feature Card 2 */}
-          <div className="bg-[var(--color-secondary)] rounded-xl p-8 space-y-3 shadow-[0_4px_16px_0_rgba(0,0,0,0.12)] hover:shadow-[0_8px_24px_0_rgba(0,0,0,0.16)] hover:-translate-y-0.5 transition-all duration-200">
-            <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-white/50">
+          <div className="bg-secondary rounded-xl p-8 space-y-3 shadow-md hover:shadow-lifted hover:-translate-y-0.5 transition-all duration-200">
+            <Eyebrow className="text-white/50">
               {homeText.intro.polish.eyebrow}
-            </p>
+            </Eyebrow>
             <img
               src="/images/feature-polish.svg"
               alt="訊息潤飾功能截圖"
               className="w-full h-auto object-contain rounded-lg overflow-hidden"
             />
-            <h3 className="font-[var(--font-display)] text-xl font-bold leading-snug text-white">
+            <H3 size="xl" className="text-white">
               {homeText.intro.polish.h3}
-            </h3>
-            <p className="font-[var(--font-body)] text-sm leading-[1.7] text-white/70">
+            </H3>
+            <p className="font-body text-sm leading-[1.7] text-white/70">
               {homeText.intro.polish.body}
             </p>
           </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Eyebrow, H2 } from "@/components/ui/typography";
 import { blogText } from "@/data/text";
 
 const { form } = blogText;
@@ -42,31 +43,31 @@ export function SubmitForm() {
 
   const inputBase =
     "w-full border-0 rounded-md bg-white " +
-    "shadow-[0_2px_8px_0_rgba(0,0,0,0.06)] " +
+    "shadow-soft " +
     "px-4 py-2.5 " +
-    "font-[var(--font-body)] text-sm text-[var(--color-primary)] " +
-    "placeholder:text-[var(--color-muted)] " +
-    "focus:outline-none focus:shadow-[0_4px_16px_0_rgba(0,0,0,0.10)] " +
+    "font-body text-sm text-primary " +
+    "placeholder:text-muted " +
+    "focus:outline-none focus:shadow-md " +
     "transition-shadow duration-200";
 
   const labelBase =
-    "block font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-secondary)] mb-2";
+    "block font-en text-xs font-medium tracking-widest uppercase text-secondary mb-2";
 
   return (
-    <div className="bg-white rounded-xl p-8 md:p-12 shadow-[0_2px_8px_0_rgba(0,0,0,0.06)]">
-      <p className="font-[var(--font-en)] text-xs font-medium tracking-widest uppercase text-[var(--color-muted)] mb-4">
+    <div className="bg-white rounded-xl p-8 md:p-12 shadow-soft">
+      <Eyebrow className="text-muted mb-4">
         {form.eyebrow}
-      </p>
-      <h2 className="font-[var(--font-display)] text-2xl md:text-3xl font-bold leading-snug text-[var(--color-primary)] mb-8">
+      </Eyebrow>
+      <H2 className="text-primary mb-8">
         {form.h2}
-      </h2>
+      </H2>
 
       {submitted ? (
         <div className="py-12 text-center space-y-4">
-          <p className="font-[var(--font-display)] text-2xl font-bold text-[var(--color-secondary)]">
+          <p className="font-display text-2xl font-bold text-secondary">
             感謝投稿！
           </p>
-          <p className="font-[var(--font-body)] text-base leading-[1.7] text-[var(--color-primary)]/70 max-w-[50ch] mx-auto">
+          <p className="font-body text-base leading-[1.7] text-primary/70 max-w-[50ch] mx-auto">
             {form.fields.submitSuccess}
           </p>
           <Button
@@ -125,7 +126,7 @@ export function SubmitForm() {
           <div>
             <label htmlFor="title" className={labelBase}>
               {form.fields.title}
-              <span className="text-[var(--color-accent)] ml-1">*</span>
+              <span className="text-accent ml-1">*</span>
             </label>
             <input
               id="title"
@@ -143,7 +144,7 @@ export function SubmitForm() {
           <div>
             <label htmlFor="content" className={labelBase}>
               {form.fields.content}
-              <span className="text-[var(--color-accent)] ml-1">*</span>
+              <span className="text-accent ml-1">*</span>
             </label>
             <textarea
               id="content"

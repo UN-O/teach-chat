@@ -21,7 +21,7 @@ Architecture: Service-Oriented Architecture (SOA)
 
 # Folder Structure
 
-Current state: `src/app/`, `src/components/ui/`, `src/hooks/`, `src/lib/` exist. Still to add: `services/`, `data/`, `types/`.
+Current state: all folders exist.
 
 ```
 src/
@@ -56,11 +56,11 @@ src/
 > Full spec: `style.md` — Editorial UI × React × Tailwind v4 × shadcn/ui
 
 - **Design philosophy**: Editorial UI — reading experience first. Layout is design, whitespace is narrative, illustration is language.
-- **Color palette**: `#B6D0E2` background · `#FFFFFF` surface · `#000000` primary text · `#2A3D66` secondary/deep-blue · `#808080` muted · `#FF5A5F` accent (max 2–3 uses/page) · `#4A90E2` accent-alt. Use CSS variables via `var(--color-*)`. No gradients, no glassmorphism.
+- **Color palette**: `#B6D0E2` background · `#FFFFFF` surface · `#000000` primary text · `#2A3D66` secondary/deep-blue · `#808080` muted · `#FF5A5F` accent (max 2–3 uses/page) · `#4A90E2` accent-alt. Tokens defined in `globals.css` `@theme {}` — use short Tailwind utilities (`text-primary`, `bg-background`, `text-secondary`, `text-muted`, etc.) **not** `text-primary` 等. No gradients, no glassmorphism.
 - **Typography**: `Chiron GoRound TC` (H1–H3, local font) · `Noto Sans TC` (body, Google Fonts) · `DM Sans` (English labels/eyebrow/numbers, Google Fonts). Only 3 weights: `400` / `500` / `700`. Line width: `max-w-[65ch]`.
 - **Font setup**: Load via `next/font/local` (Chiron) + `next/font/google` (Noto TC, DM Sans); expose as CSS variables `--font-chiron`, `--font-noto-tc`, `--font-dm-sans`.
 - **CSS**: Tailwind v4 uses `@import "tailwindcss"` + `@theme {}` block (not `@tailwind base/components/utilities`). All design tokens defined in `globals.css` using `@theme`.
-- **Components**: Use `class-variance-authority` (cva) for multi-variant components. Cards use `rounded-xl`, elements use `rounded-lg`, badges use `rounded-md`. Soft shadows (`0 2px 8px rgba(0,0,0,0.06)`) replace borders. No icons inside cards — use eyebrow labels instead.
+- **Components**: Use `class-variance-authority` (cva) for multi-variant components. Cards use `rounded-xl`, elements use `rounded-lg`, badges use `rounded-md`. Use shadow tokens (`shadow-soft` / `shadow-md` / `shadow-lifted`) — never hardcode shadow RGBA values. No icons inside cards — use eyebrow labels instead.
 - **Motion**: Fade-in only (`opacity` + `translateY(12px)`). No bounce, no spring, no rotation. Use `transition-shadow` / `transition-colors` for hover, not `transition-all`.
 - **Layout**: Section padding `py-24 px-6 md:px-16`. Asymmetric grids: `grid-cols-[3fr_2fr]` or `[2fr_3fr]`. No 1:1 symmetric layouts.
 - **Illustrations**: `mix-blend-multiply` to blend with background. No rounded corners, no shadow, no card background on illustrations.
@@ -88,9 +88,21 @@ src/
 
 ---
 
+# File Naming
+
+All file names are lowercase with hyphens (e.g., `submit-form.tsx`, `user-profile.ts`).
+
+---
+
+# shadcn/ui
+
+All shadcn/ui components are available. Prefer using them to simplify component code wherever applicable.
+
+---
+
 # Task Pipeline
 
-1. **Branch** — format: `name-intention-tasktitle` (e.g. `jerry-feature-mainpage`). Checkout to that branch.
+1. **Branch** — format: `{prefix}/{description}` (e.g. `feat/auth`, `feat/dark-mode`). Prefix: `feat/` in most cases; `chores/`, `bugfix/`, `hotfix/` when appropriate. Description: a single lowercase word; use `-` to join words only if unavoidable. Checkout to that branch.
 2. **Doc** — create a task doc in `Todo/` named `<branch-name>.md`.
 3. **Plan** — describe exactly what to do in the task doc before writing any code.
 4. **Generate** — follow the plan to implement.
@@ -99,8 +111,39 @@ src/
    - Frontend renders correctly (`playwright --chrome`)
    - Style aligns with the style guidelines above
    - Code is clean and not over-abstracted
-6. **Commit** — commit with a proper message for each sub-task.
+6. **Commit** — follow the Commit Rules below.
 7. **PR** — open a pull request to merge changes back to `main`.
+
+---
+
+# Commit Rules
+
+### Format
+
+`{Type}: {Capitalized sentence}`
+
+| Type | When to use |
+|---|---|
+| `Feat` | New feature or functionality |
+| `Chores` | Maintenance, config, tooling |
+| `Bugfix` | Non-urgent bug fix |
+| `Lintfix` | Lint-only changes |
+| `Hotfix` | Urgent bug fix |
+| `Test` | Test-related changes |
+
+### Granularity
+
+- Multiple commits per branch are allowed.
+- Each commit must reflect exactly what its message describes.
+- If a single file needs to be split across two commits, stage only the relevant lines (e.g. `git add -p`) — do not bundle unrelated changes.
+
+### Amending a commit
+
+To revise recent commits: soft reset, incorporate all new changes, then re-commit. Soft reset may span multiple commits, but only commits authored by Claude — never reset or modify commits made by the developer.
+
+### Temporary commits
+
+Temporary commits by developers will appear in all-caps: `TEMP TRANSFER`, `DONE`, `NOT DONE`, etc. Treat these as human-managed; do not reorder, squash, or modify them.
 
 ---
 
