@@ -24,29 +24,63 @@ Architecture: Service-Oriented Architecture (SOA)
 Current state: all folders exist.
 
 ```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── (marketing)/        # /home, /about, /technique, /blog, /how-to-use
-│   ├── polish/             # /polish — message rewrite tool (PolishService)
-│   ├── scenario/
-│   │   ├── page.tsx        # /scenario — scenario list
-│   │   └── [name]/
-│   │       ├── page.tsx    # /scenario/[name] — intro + difficulty selection
-│   │       └── [uuid]/     # game session: intro → chatlist → chat → phase*/sectionclose → final
-│   └── api/                # Route handlers (AI stream endpoints)
-├── services/               # SOA service layer (pure functions / classes)
-│   ├── ScenarioService.ts  # scenario data & parent persona prompts
-│   ├── ScoringService.ts   # rubric evaluation (T01–T14)
-│   └── PolishService.ts    # message rewriting via AI SDK
-├── components/             # Shared UI components
-│   ├── ui/                 # shadcn/ui primitives (added via `pnpm dlx shadcn add`)
-│   └── game/               # scenario-specific components
-├── hooks/                  # Custom React hooks
-├── lib/
-│   ├── utils.ts            # cn() helper (clsx + tailwind-merge)
-│   └── fetch.ts            # ky-based fetcher for swr
-├── data/                   # Static scenario TS data files
-└── types/                  # Shared TypeScript interfaces
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── (marketing)/        # /home, /about, /technique, /blog, /how-to-use
+│   │   ├── polish/             # /polish — message rewrite tool (PolishService)
+│   │   ├── scenario/
+│   │   │   ├── page.tsx        # /scenario — scenario list
+│   │   │   └── [name]/
+│   │   │       ├── page.tsx    # /scenario/[name] — intro + difficulty selection
+│   │   │       └── [uuid]/     # game session: intro → chatlist → chat → phase*/sectionclose → final
+│   │   └── api/                # Route handlers (AI stream endpoints)
+│   ├── services/               # SOA service layer (pure functions / classes)
+│   │   ├── ScenarioService.ts  # scenario data & parent persona prompts
+│   │   ├── ScoringService.ts   # rubric evaluation (T01–T14)
+│   │   └── PolishService.ts    # message rewriting via AI SDK
+│   ├── components/             # Shared UI components
+│   │   ├── ui/                 # shadcn/ui primitives (added via `pnpm dlx shadcn add`)
+│   │   └── game/               # scenario-specific components
+│   ├── hooks/                  # Custom React hooks
+│   ├── lib/
+│   │   ├── utils.ts            # cn() helper (clsx + tailwind-merge)
+│   │   └── fetch.ts            # ky-based fetcher for swr
+│   ├── data/                   # Static scenario TS data files
+│   └── types/                  # Shared TypeScript interfaces
+│   
+├── .github/
+│   └── copilot-instructions.md
+├── certificates/
+│   ├── localhost-key.pem
+│   └── localhost.pem
+├── docs/
+│   ├── page-content.md
+│   ├── scenarios/
+│   │   ├── abnormal/
+│   │   └── fight/
+│   └── techniques/
+├── public/
+│   └── images/
+│       └── techniques/
+├── todo/
+│   ├── _template.md
+│   ├── claude-setup-interface-content.md
+│   ├── images-needed.md
+│   └── jerry-feature-projectsetup.md
+├── .env.example
+├── .gitignore
+├── Claude.md
+├── README.md
+├── components.json
+├── design.md
+├── style.md
+├── next-env.d.ts
+├── next.config.ts
+├── postcss.config.mjs
+├── tsconfig.json
+├── package.json
+├── pnpm-lock.yaml
+└── pnpm-workspace.yaml
 ```
 
 ---
