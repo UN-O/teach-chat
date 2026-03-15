@@ -39,14 +39,17 @@
 - [ ] `/polishtext` — AI message polish tool
 
 ### Scenario System
-- [ ] `/scenario` — Scenario list (card grid)
-- [ ] `/scenario/[name]` — Scenario detail + difficulty selector
-- [ ] `/scenario/[name]/[uuid]/intro` — RPG intro screen
-- [ ] `/scenario/[name]/[uuid]/chatlist` — Chat inbox list
-- [ ] `/scenario/[name]/[uuid]/chat` — Interactive chat interface
-- [ ] `/scenario/[name]/[uuid]/phase1/sectionclose` — Phase 1 scoring
-- [ ] `/scenario/[name]/[uuid]/phase2/sectionclose` — Phase 2 scoring
-- [ ] `/scenario/[name]/[uuid]/final` — Final results & skill radar chart
+- [x] `/scenario` — Scenario list (card grid)
+- [x] `/scenario/[name]` — Scenario detail + difficulty selector
+- [x] `/scenario/[name]/[difficulty]/[uuid]/init` — Avatar & player profile selection
+- [x] `/scenario/[name]/[difficulty]/[uuid]/intro` — RPG-style story intro
+- [x] `/scenario/[name]/[difficulty]/[uuid]/chat` — Interactive chat (chatlist + chatroom + mission panel)
+- [x] `/scenario/[name]/[difficulty]/[uuid]/score/phase1` — Phase 1 scoring & radar chart
+- [x] `/scenario/[name]/[difficulty]/[uuid]/score/phase2` — Phase 2 scoring & radar chart
+- [x] `/scenario/[name]/[difficulty]/[uuid]/final` — Final results, total radar chart & recommendations
+- [x] Services: ScenarioService, ScoringService, GameEngineService (6 LLM Actions)
+- [x] Zustand store with localStorage persistence
+- [x] API routes: /api/chat, /api/game/check-mission, /api/game/check-send, /api/game/update-pad, /api/score
 
 ### AI Services
 - [ ] `ScenarioService` — generate parent persona & dynamic responses
