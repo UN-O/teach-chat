@@ -11,7 +11,7 @@ export default async function TechniquePage() {
   return (
     <>
       {/* Page Header */}
-      <section className="px-6 md:px-16 py-20 bg-background">
+      <section className="px-6 md:px-16 py-20 bg-surface">
         <div className="max-w-6xl mx-auto space-y-6">
           <Eyebrow className="text-secondary">
             {techniqueText.eyebrow}
@@ -25,7 +25,7 @@ export default async function TechniquePage() {
         </div>
       </section>
 
-      {/* Platform Tips */}
+      {/* Platform Tips
       <section className="px-6 md:px-16 py-16 bg-surface">
         <div className="max-w-6xl mx-auto">
           <div className="bg-white rounded-xl p-8 md:p-12 shadow-soft space-y-4">
@@ -40,7 +40,7 @@ export default async function TechniquePage() {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Core Techniques */}
       <section className="px-6 md:px-16 py-16 bg-background">

@@ -49,13 +49,13 @@ export default async function TechniqueDetailPage({ params }: TechniqueDetailPag
     }
 
     return (
-        <section className="p-0 pt-5 md:px-16 md:py-20 bg-background grid gap-5 overflow-x-hidden">
+        <section className="bg-background grid gap-5 px-1 pt-5 pb-8 md:px-16 md:py-20 overflow-x-hidden">
             <div className="max-w-4xl mx-auto w-full">
                 <Button asChild variant="secondary" size="sm" className="w-fit normal-case tracking-normal">
                     <Link href="/technique">← 回交戰手冊</Link>
                 </Button>
             </div>
-            <article className="max-w-4xl mx-auto bg-white rounded-xl p-8 md:p-12 shadow-soft space-y-8 animate-editorial-in pb-40">
+            <article className="max-w-4xl mx-auto w-full overflow-hidden bg-white rounded-xl p-5 md:p-12 shadow-soft space-y-8 animate-editorial-in pb-24 md:pb-40">
                 <header className="space-y-4 pb-6 border-b border-muted/20">
                     <Eyebrow className="text-secondary">{technique.eyebrow}</Eyebrow>
                     <H1 className="text-primary">{technique.title}</H1>
@@ -74,7 +74,7 @@ export default async function TechniqueDetailPage({ params }: TechniqueDetailPag
                     </div>
                 </header>
 
-                <div className="space-y-5 text-primary/90 [&_a]:text-secondary [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-primary">
+                <div className="space-y-5 text-primary/90 [&_a]:text-secondary [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-primary [&_img]:max-w-full [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_code]:wrap-break-word">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
@@ -84,12 +84,12 @@ export default async function TechniqueDetailPage({ params }: TechniqueDetailPag
                                 </h1>
                             ),
                             h2: ({ children }) => (
-                                <h2 className="pt-4 font-display text-2xl leading-tight font-bold text-primary">
+                                <h2 className="pt-10 font-display text-2xl leading-tight font-bold text-primary">
                                     {children}
                                 </h2>
                             ),
                             h3: ({ children }) => (
-                                <h3 className="pt-3 font-display text-xl font-medium text-secondary">
+                                <h3 className="pt-8 font-display text-xl font-bold text-secondary">
                                     {children}
                                 </h3>
                             ),
@@ -124,12 +124,12 @@ export default async function TechniqueDetailPage({ params }: TechniqueDetailPag
                             ),
                             thead: ({ children }) => <thead className="bg-background/70">{children}</thead>,
                             th: ({ children }) => (
-                                <th className="border border-muted/40 px-4 py-3 font-en text-xs font-medium tracking-wide text-secondary uppercase whitespace-normal wrap-break-word">
+                                <th className="border border-muted/40 px-4 py-3 font-en text-xs font-medium tracking-wide text-secondary uppercase whitespace-normal wrap-anywhere">
                                     {children}
                                 </th>
                             ),
                             td: ({ children }) => (
-                                <td className="border border-muted/30 px-4 py-3 align-top font-body text-sm leading-[1.7] text-primary/90 whitespace-normal wrap-break-word">
+                                <td className="border border-muted/30 px-4 py-3 align-top font-body text-sm leading-[1.7] text-primary/90 whitespace-normal wrap-anywhere">
                                     {children}
                                 </td>
                             ),
