@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
 import { Eyebrow, H1, H2, H3 } from "@/components/ui/typography";
 import { techniqueText } from "@/data/text";
+import { getAllTechniqueDocs } from "@/lib/techniques";
 
-export default function TechniquePage() {
+export default async function TechniquePage() {
+  const techniques = await getAllTechniqueDocs();
+
   return (
     <>
       {/* Page Header */}
@@ -51,31 +55,36 @@ export default function TechniquePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 stagger">
-            {techniqueText.techniques.map((technique) => (
-              <div
-                key={technique.code}
-                className={`rounded-xl p-8 space-y-3 transition-all duration-200 ${
-                  technique.comingSoon
-                    ? "bg-background border border-muted/20"
-                    : "bg-white shadow-soft hover:shadow-md hover:-translate-y-0.5"
-                }`}
+            {techniques.map((technique) => (
+              <Link
+                key={technique.id}
+                href={`/docs/techniques/${technique.id}`}
+                className="group block rounded-xl bg-white shadow-soft hover:shadow-md transition-shadow duration-200 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
               >
-                <Eyebrow className="text-muted">
-                  {technique.eyebrow}
-                </Eyebrow>
-                <H3 size="xl" weight="medium" className="text-primary">
-                  {technique.h3}
-                </H3>
-                {technique.comingSoon ? (
-                  <p className="font-body text-sm leading-[1.7] text-muted italic">
-                    文章撰寫中，敬請期待...
-                  </p>
-                ) : (
+                <div className="relative aspect-4/3 bg-background/60">
+                  <Image
+                    src={technique.coverImage}
+                    alt={technique.coverAlt}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-8 space-y-3">
+                  <Eyebrow className="text-muted">
+                    {technique.eyebrow}
+                  </Eyebrow>
+                  <H3 size="xl" weight="medium" className="text-primary">
+                    {technique.title}
+                  </H3>
                   <p className="font-body text-sm leading-[1.7] text-primary/70">
-                    {technique.body}
+                    {technique.summary}
                   </p>
-                )}
-              </div>
+                  <div className="pt-2 font-en text-sm font-medium text-secondary transition-colors group-hover:text-primary">
+                      查看完整文章 →
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
 

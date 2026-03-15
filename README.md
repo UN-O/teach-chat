@@ -30,7 +30,9 @@
 
 ### Pages
 - [ ] `/home` — Hero, Hook, Introduction sections
-- [ ] `/technique` — New Teacher Handbook (communication tips)
+- [x] `/technique` — New Teacher Handbook (communication tips)
+- [x] `/technique` + `/docs/techniques/[id]` — Shared 4:3 SVG cover image integration
+- [x] `/docs/techniques/[id]` — Technique article detail routes from markdown docs
 - [x] `/about` — About the team & future plans
 - [ ] `/how-to-use` — Step-by-step usage guide
 - [ ] `/blog` — Teacher Ghost Stories (community posts)

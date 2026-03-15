@@ -9,7 +9,7 @@ export const siteText = {
 
 export const navText = {
   home: "首頁",
-  technique: "技巧手冊",
+  technique: "交戰手冊",
   howToUse: "怎麼使用",
   blog: "鬼故事",
   about: "關於我們",
@@ -65,7 +65,7 @@ export const homeText = {
   },
   contact: {
     eyebrow: "Contact Us",
-    h2: "聯絡我們，我們一直都在",
+    h2: "讓我們一起共創價值",
     body: "遇到問題？或是想敲碗新劇本？隨時告訴我們。",
     email: "contact@teachchat.tw",
     ctaForm: "點此填寫問題回報與建議",
@@ -82,7 +82,7 @@ export const techniqueText = {
     h2: "溝通平台技巧：教師官方 LINE 的好處",
     body: "LINE 是一把雙面刃。建立「教師官方 LINE」能為你設立明確的上下班界線，保護私人生活。同時要記得：文字沒有溫度但有證據，學會判斷「何時該用文字告知，何時該果斷打電話」，是你保護自己的第一步。",
   },
-  coreTitle: "核心溝通技巧系列",
+  coreTitle: "溝通技巧系列",
   techniques: [
     {
       eyebrow: "技巧 00",
