@@ -110,22 +110,49 @@ Current state: all folders exist.
 │   │   │   ├── page.tsx        # /scenario — scenario list
 │   │   │   └── [name]/
 │   │   │       ├── page.tsx    # /scenario/[name] — intro + difficulty selection
-│   │   │       └── [uuid]/     # game session: intro → chatlist → chat → phase*/sectionclose → final
+│   │   │       └── [difficulty]/[uuid]/
+│   │   │           ├── init/   # avatar & player profile setup
+│   │   │           ├── intro/  # RPG-style story intro
+│   │   │           ├── chat/   # game: chatlist + chatroom + mission panel
+│   │   │           ├── score/
+│   │   │           │   ├── phase1/  # Phase 1 scoring & radar chart
+│   │   │           │   └── phase2/  # Phase 2 scoring & radar chart
+│   │   │           └── final/  # final results + total radar chart
 │   │   └── api/                # Route handlers (AI stream endpoints)
+│   │       ├── chat/           # POST — streamText (parent AI response)
+│   │       ├── game/
+│   │       │   ├── check-mission/  # POST — checkMission (Action A3)
+│   │       │   ├── check-send/     # POST — checkSend + generateMessage (A2+A1)
+│   │       │   └── update-pad/     # POST — updatePAD + updateMemories (A5+A4)
+│   │       └── score/          # POST — scorePhase (Action A6)
 │   ├── services/               # SOA service layer (pure functions / classes)
-│   │   ├── ScenarioService.ts  # scenario data & parent persona prompts
-│   │   ├── ScoringService.ts   # rubric evaluation (T01–T14)
+│   │   ├── ScenarioService.ts  # scenario data, system prompts, mission labels
+│   │   ├── ScoringService.ts   # rubric evaluation (T01–T17), scorePhase()
+│   │   ├── GameEngineService.ts # Phase 2 engine: 6 LLM actions, t_delay calc
 │   │   └── PolishService.ts    # message rewriting via AI SDK
 │   ├── components/             # Shared UI components
 │   │   ├── ui/                 # shadcn/ui primitives (added via `pnpm dlx shadcn add`)
 │   │   └── game/               # scenario-specific components
+│   │       ├── chat-bubble.tsx  # LINE-style message bubble
+│   │       ├── chat-input.tsx   # auto-resize textarea + send button
+│   │       ├── chat-list.tsx    # parent list with online/unread indicators
+│   │       ├── mission-panel.tsx # collapsible mission checklist
+│   │       ├── pad-indicator.tsx # PAD emotional state dots
+│   │       ├── score-card.tsx   # technique score card + TotalScoreDisplay
+│   │       └── radar-chart.tsx  # recharts radar chart wrapper
 │   ├── hooks/                  # Custom React hooks
 │   ├── lib/
 │   │   ├── utils.ts            # cn() helper (clsx + tailwind-merge)
-│   │   └── fetch.ts            # ky-based fetcher for swr
-│   ├── data/                   # Static scenario TS data files
-│   └── types/                  # Shared TypeScript interfaces
-│   
+│   │   ├── fetch.ts            # ky-based fetcher for swr
+│   │   └── llm/
+│   │       └── config.ts       # getLLMModel(), googleProviderOptions
+│   ├── store/
+│   │   └── game-store.ts       # Zustand store with localStorage persistence
+│   ├── data/
+│   │   └── scenarios.ts        # scenario configs (fight/abnormal × basic/advanced)
+│   └── types/
+│       └── index.ts            # shared TypeScript interfaces & enums
+│
 ├── .github/
 │   └── copilot-instructions.md
 ├── certificates/
@@ -140,14 +167,15 @@ Current state: all folders exist.
 ├── public/
 │   └── images/
 │       └── techniques/
-├── todo/
+├── Todo/
 │   ├── _template.md
 │   ├── claude-setup-interface-content.md
+│   ├── feat-scenario-game.md
 │   ├── images-needed.md
 │   └── jerry-feature-projectsetup.md
 ├── .env.example
 ├── .gitignore
-├── Claude.md
+├── CLAUDE.md
 ├── README.md
 ├── components.json
 ├── design.md
@@ -263,8 +291,9 @@ Temporary commits by developers will appear in all-caps: `TEMP TRANSFER`, `DONE`
 
 ```
 # .env.local (never commit)
-ANTHROPIC_API_KEY=          # Claude API key — used by Vercel AI SDK on the server
-NEXT_PUBLIC_APP_URL=        # e.g. https://teach-chat.vercel.app
+GOOGLE_GENERATIVE_AI_API_KEY=   # Google Gemini API key (preferred)
+OPENAI_API_KEY=                 # OpenAI API key (fallback)
+NEXT_PUBLIC_APP_URL=            # e.g. https://teach-chat.vercel.app
 ```
 
 - Install packages with `pnpm add` / `pnpm add -D`.

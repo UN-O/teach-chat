@@ -36,7 +36,7 @@ export function HookSection() {
                                         className="h-auto min-h-13 w-full justify-between py-3"
                                         asChild
                                     >
-                                        <Link href="/scenario/studentfeud">
+                                        <Link href="/scenario/fight">
                                             <span className="flex-1 text-left whitespace-normal leading-[1.4]">
                                                 {homeText.hook.scenario.ctaFight}
                                             </span>
@@ -49,7 +49,7 @@ export function HookSection() {
                                         className="h-auto min-h-13 w-full justify-between py-3"
                                         asChild
                                     >
-                                        <Link href="/scenario/disorder">
+                                        <Link href="/scenario/abnormal">
                                             <span className="flex-1 text-left whitespace-normal leading-[1.4]">
                                                 {homeText.hook.scenario.ctaDisorder}
                                             </span>
@@ -101,7 +101,7 @@ export function HookSection() {
                         </p>
                             <div className="rounded-xl bg-white">
                                 <Button size="lg" className="h-auto min-h-13 w-full justify-between py-3" asChild>
-                                    <Link href="/polishtext">
+                                    <Link href="/polish">
                                         <span className="flex-1 text-left whitespace-normal leading-[1.4]">
                                             {homeText.hook.polish.cta}
                                         </span>
