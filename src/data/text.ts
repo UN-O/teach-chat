@@ -201,7 +201,7 @@ export const aboutText = {
     },
     {
       name: "芸辰",
-      role: "NPO 志工",
+      role: "新創×社創 斜槓大學生",
       desc: "台大心理系・人機互動心理學實驗研究",
     },
     {

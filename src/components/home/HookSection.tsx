@@ -6,7 +6,7 @@ import { homeText } from "@/data/text";
 
 export function HookSection() {
     return (
-        <section className="bg-surface">
+        <section id="hook" className="bg-surface">
             {/* Scenario block */}
             <div className="py-14 md:py-24">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_2fr] items-center p-5 sm:p-6 md:p-0 gap-10">

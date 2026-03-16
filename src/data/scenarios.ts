@@ -131,7 +131,7 @@ const fightBasic: ScenarioConfig = {
         { id: 'A1', label: '家長知道孩子今天發生了衝突', description: '訊息中提及事件發生' },
         { id: 'A2', label: '家長知道對方孩子有輕微受傷', description: '提及傷勢情況' },
         { id: 'A3', label: '家長知道學校已處理，孩子已道歉和解', description: '說明處置結果' },
-        { id: 'A4', label: '開場未讓家長立即進入防禦狀態', description: '語氣溫和不指責' },
+        { id: 'A4', label: '訊息不帶入情緒性用詞，立場中立', description: '語氣溫和不指責' },
       ],
       B: [
         { id: 'B1', label: '家長知道孩子今天受傷了', description: '訊息中提及受傷事實' },
