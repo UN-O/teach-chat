@@ -48,7 +48,7 @@ export function Navbar() {
 
         {/* Desktop CTA */}
         <div className="hidden md:block">
-          <Button variant="deep" size="sm" asChild>
+          <Button variant="deep" asChild>
             <Link href="/scenario">{navText.startPractice}</Link>
           </Button>
         </div>

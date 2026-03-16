@@ -8,7 +8,6 @@ const footerLinks = [
   { href: "/", label: navText.home },
   { href: "/technique", label: navText.technique },
   { href: "/how-to-use", label: navText.howToUse },
-  { href: "/blog", label: navText.blog },
   { href: "/about", label: navText.about },
 ];
 

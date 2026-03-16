@@ -50,8 +50,8 @@ export default function InitPage() {
   }
 
   return (
-    <main className="h-svh overflow-hidden bg-background flex items-center justify-center px-4 py-4 sm:px-6 sm:py-6">
-      <div className="bg-white rounded-2xl shadow-md p-6 sm:p-8 md:p-10 w-full max-w-md max-h-full overflow-hidden">
+    <main className="min-h-svh bg-background flex items-center justify-center px-4 py-8 sm:px-6 sm:py-10">
+      <div className="bg-white rounded-2xl shadow-md p-6 sm:p-8 md:p-10 w-full max-w-md">
         <h1 className="font-[var(--font-chiron)] text-2xl font-bold text-black mb-2">
           設定你的角色
         </h1>
