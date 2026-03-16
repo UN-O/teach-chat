@@ -52,7 +52,7 @@ export default async function TechniqueDetailPage({ params }: TechniqueDetailPag
         <section className="bg-background grid gap-5 px-1 pt-5 pb-8 md:px-16 md:py-20 overflow-x-hidden">
             <div className="max-w-4xl mx-auto w-full">
                 <Button asChild variant="secondary" size="sm" className="w-fit normal-case tracking-normal">
-                    <Link href="/technique">← 回交戰手冊</Link>
+                    <Link href="/technique">← 回教戰手冊</Link>
                 </Button>
             </div>
             <article className="max-w-4xl mx-auto w-full overflow-hidden bg-white rounded-xl p-5 md:p-12 shadow-soft space-y-8 animate-editorial-in pb-24 md:pb-40">

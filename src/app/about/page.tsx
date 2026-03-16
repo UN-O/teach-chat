@@ -61,9 +61,14 @@ export default function AboutPage() {
                     <p className="font-display text-sm font-medium text-primary">
                       {member.name}
                     </p>
-                    <p className="font-en text-xs text-muted tracking-wider mt-1">
+                    <p className="font-body text-xs font-medium text-secondary mt-1">
                       {member.role}
                     </p>
+                    {"desc" in member && member.desc && (
+                      <p className="font-body text-xs text-muted leading-relaxed mt-1">
+                        {member.desc}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

@@ -9,8 +9,10 @@ export const siteText = {
 
 export const navText = {
   home: "首頁",
-  technique: "交戰手冊",
+  technique: "教戰手冊",
   howToUse: "怎麼使用",
+  scenario: "情境演練",
+  polishText: "訊息潤稿",
   blog: "鬼故事",
   about: "關於我們",
   startPractice: "開始練習",
@@ -43,19 +45,45 @@ export const homeText = {
       body: "將你想說的話貼上來，系統會自動幫你過濾情緒字眼，轉換成同理卻不失專業的溫暖回覆。",
       cta: "試試訊息潤飾小幫手 ✨",
     },
+    technique: {
+      eyebrow: "Technique Guide",
+      h2: "新手教師教戰手冊",
+      body: "沒有人天生就會和家長溝通。這裡整理了最關鍵的幾個技巧，讓你在開口之前，先有一套清晰的框架——從首訊破冰到升溫降溫，一步步建立你的溝通本能。",
+      cta: "查閱教戰手冊",
+      tags: [
+        { code: "T01", label: "首訊破冰與開場設計" },
+        { code: "T02", label: "事實與擔憂分層陳述" },
+        { code: "T06", label: "升溫情況的降溫技術" },
+        { code: "T00", label: "三明治溝通法" },
+      ] as const,
+    },
   },
   intro: {
-    eyebrow: "Why This Simulator",
-    h2: "為什麼這個模擬器？",
+    eyebrow: "What You Get",
+    h2: "一個模擬器，四個核心體驗",
+    subtitle:
+      "從沉浸式情境演練到 AI 評分，每個功能都為「讓新手老師不再害怕家長訊息」而設計。",
     scenario: {
-      eyebrow: "Immersive Practice",
+      eyebrow: "01 · Scenario Training",
       h3: "沉浸式情境演練",
-      body: "真實還原家長的情緒起伏。提供第一人稱的對話訓練，系統將根據你的回應，即時給予降溫或定責風險的反饋。",
+      body: "以第一人稱對話，體驗真實的家長溝通場景。兩大劇本、雙重難度，從班級衝突到學生失常，讓你在零風險的環境中反覆練習到熟練。",
+      cta: "選擇情境，開始練習",
+    },
+    pad: {
+      eyebrow: "02 · AI Parent Personas",
+      h3: "AI 情緒建模的真實家長",
+      body: "每位家長都有獨立的 PAD 情緒模型——情緒愉悅度、激活度、控制感三軸動態變化。你的每一句話，都牽動著對方下一刻的回應速度與語氣。",
+    },
+    scoring: {
+      eyebrow: "03 · Skills Radar",
+      h3: "18 項技巧科學評分",
+      body: "完成每個階段後，AI 依據 18 項專業溝通技巧逐項評分，並生成技能雷達圖，讓你看清楚自己的強項與待加強的盲點。",
     },
     polish: {
-      eyebrow: "Safe Text Filter",
-      h3: "安全無痛的文字濾鏡",
-      body: "把不確定的訊息草稿丟上來！我們協助你做到「事實與擔憂分層陳述」，讓關心精準傳達。",
+      eyebrow: "04 · Message Polish",
+      h3: "隨時可用的訊息潤飾防護網",
+      body: "不想進遊戲？直接貼上你的草稿。AI 協助你濾除地雷詞彙、重整事實與擔憂陳述，一鍵生成安全又溫暖的回覆。",
+      cta: "試試訊息潤飾",
     },
   },
   origin: {
@@ -74,7 +102,7 @@ export const homeText = {
 
 export const techniqueText = {
   eyebrow: "Teacher Handbook",
-  h1: "新手教師交戰手冊",
+  h1: "新手教師教戰手冊",
   intro:
     "親愛的老師，辛苦了。溝通是一門需要練習的藝術，這裡為你準備了一套「溝通急救箱」。當你不知道該怎麼辦時，隨時來這裡翻翻找找。",
   platform: {
@@ -166,35 +194,118 @@ export const aboutText = {
     ],
   },
   teamMembers: [
-    { name: "成員一", role: "教育研究", placeholder: true },
-    { name: "成員二", role: "前端開發", placeholder: true },
-    { name: "成員三", role: "UI/UX 設計", placeholder: true },
-    { name: "成員四", role: "AI 工程", placeholder: true },
-    { name: "成員五", role: "內容策劃", placeholder: true },
+    {
+      name: "UN-O",
+      role: "清大 AI 助教負責人",
+      desc: "清大教育學院博士班・AI 融入教育實務研究",
+    },
+    {
+      name: "芸辰",
+      role: "NPO 志工",
+      desc: "台大心理系・人機互動心理學實驗研究",
+    },
+    {
+      name: "小柯",
+      role: "智慧社區產品經理",
+      desc: "清大英語教育系",
+    },
+    {
+      name: "Jerry",
+      role: "資訊系統與人機互動研究",
+      desc: "清大服務科學博士班",
+    },
+    {
+      name: "Ritmo",
+      role: "清大 AI 助教開發者",
+      desc: "清大工學院學士班・全端工程師",
+    },
   ],
 } as const;
 
 export const howToUseText = {
   eyebrow: "How To Use",
   h1: "系統使用導覽",
-  intro: "介紹這個系統可以為你做什麼。跟著以下圖文步驟，無痛上手你的專屬溝通模擬器！",
-  screenshotNotice:
-    "截圖教學將於系統完整上線後更新，敬請期待！",
+  intro:
+    "完整的模擬流程，從選擇劇本到查看評分，每個步驟都為讓你真正練到、學到而設計。",
   steps: [
     {
       num: "01",
-      h3: "選擇情境",
-      body: "從兩大情境（班級衝突／學生失常）中選出你想練習的類型，再選擇簡單或困難難度。",
+      phase: null as string | null,
+      h3: "選擇情境與難度",
+      body: "從兩大情境劇本中挑選：班級衝突或學生失常，再決定簡單或困難難度。每個情境都有完整的事件背景、人物設定與利害關係，難度越高涉及的家長越多、情緒越複雜。",
+      features: [] as { label: string; desc: string }[],
     },
     {
       num: "02",
-      h3: "練習對話",
-      body: "系統扮演真實家長，根據你的回覆動態調整情緒。練習用文字完成告知、安撫與收尾。",
+      phase: null as string | null,
+      h3: "建立你的老師角色",
+      body: "選擇角色頭像、輸入姓名、選擇任教場域（國小 / 國中）與身份（實習 / 兼課 / 代課 / 正式老師），讓情境更貼近你的真實處境。",
+      features: [] as { label: string; desc: string }[],
     },
     {
       num: "03",
-      h3: "查看成績",
-      body: "完成後獲得技能雷達圖與各項技巧評分，了解自己的強項與待加強之處。",
+      phase: null as string | null,
+      h3: "閱讀前情提要",
+      body: "以 RPG 故事方式呈現的事件背景——發生了什麼、涉及哪些人、時間與地點。務必記住關鍵細節，對話時這些都是你最重要的依據。",
+      features: [] as { label: string; desc: string }[],
+    },
+    {
+      num: "04",
+      phase: "Phase 1",
+      h3: "主動告知：傳送你的第一則訊息",
+      body: "家長目前還沒上線。你需要主動傳訊息給雙方家長，完成本階段的告知任務。側邊的任務面板會追蹤所有目標，資深老師也會即時給你溝通建議——完成所有任務後才能進入評分。",
+      features: [
+        { label: "任務面板", desc: "追蹤本階段所有目標，清楚知道還差什麼" },
+        {
+          label: "資深老師即時建議",
+          desc: "根據當前對話狀況，提示你應注意的溝通技巧",
+        },
+      ],
+      subImages: [
+        {
+          src: "/images/how-to-use-step-04-1.jpeg",
+          label: "資深老師即時建議",
+          alt: "資深老師建議面板截圖",
+        },
+        {
+          src: "/images/how-to-use-step-04-2.jpeg",
+          label: "回應指引",
+          alt: "回應指引提示截圖",
+        },
+      ] as { src: string; label: string; alt: string }[],
+    },
+    {
+      num: "05",
+      phase: "Phase 2",
+      h3: "家長上線，即時互動開始",
+      body: "家長看到你的訊息後開始回應！每位家長有獨立的 AI 情緒模型，回應速度與語氣會隨你的對話內容動態改變。處理追問、安撫情緒，並在適當時機引導對話收尾。",
+      features: [
+        {
+          label: "AI 情緒建模",
+          desc: "家長情緒三軸（愉悅度、激活度、控制感）即時更新，影響回應內容與速度",
+        },
+        {
+          label: "資深老師即時建議",
+          desc: "針對家長當下情緒狀態，提供降溫或引導策略",
+        },
+      ],
+    },
+    {
+      num: "06",
+      phase: "Score",
+      h3: "查看技能雷達圖與逐項評分",
+      body: "每個階段完成後，AI 依據 18 項親師溝通技巧逐一評分（1–4 分），並以雷達圖呈現你的強項與盲點。每項技巧都附有具體評語與改善建議，讓你知道下次要調整什麼。",
+      features: [
+        { label: "18 項技巧評分", desc: "每項 1–4 分，附評語與具體改善建議" },
+        { label: "技能雷達圖", desc: "視覺化呈現整體溝通表現，一眼看出強弱項" },
+      ],
+    },
+    {
+      num: "07",
+      phase: "Final",
+      h3: "總結建議，決定下一步",
+      body: "查看兩個階段的綜合雷達圖與個人化建議，系統會推薦你延伸閱讀相關溝通技巧。可以直接重玩任一階段繼續磨練，也可以回到情境列表挑戰不同劇本。",
+      features: [] as { label: string; desc: string }[],
     },
   ],
   cta: "前往情境列表開始練習",

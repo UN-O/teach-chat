@@ -122,6 +122,7 @@ export default function ChatPage() {
   const lastSubmittedContentRef = useRef<{ content: string; at: number; parentId: ParentId; phase: 1 | 2 } | null>(null)
   const teacherGreetTriggeredRef = useRef(false)
   const expertGreetTriggeredRef = useRef(false)
+  const isCheckSendInFlightRef = useRef(false)
 
   const currentPhase = session?.currentPhase ?? 1
   const isViewingParent = activeChatId !== 'teacher' && activeChatId !== 'expert'
@@ -299,9 +300,11 @@ export default function ChatPage() {
 
     const runCheckSend = async () => {
       if (!session) return
+      if (isCheckSendInFlightRef.current) return
       const probability = (parent.padState.arousal + 5) / 10
       if (Math.random() > probability) return
       updateLastCheckSend(pid)
+      isCheckSendInFlightRef.current = true
       try {
         const res = await fetch('/api/game/check-send', {
           method: 'POST',
@@ -314,6 +317,7 @@ export default function ChatPage() {
         const data = await res.json() as { shouldSend: boolean; bubbles: string[] }
         if (data.shouldSend && data.bubbles.length > 0) addPendingSeq(pid, data.bubbles)
       } catch { /* silently fail */ }
+      finally { isCheckSendInFlightRef.current = false }
     }
 
     checkSendIntervalRef.current = setInterval(runCheckSend, CHECK_SEND_INTERVAL)
@@ -356,6 +360,8 @@ export default function ChatPage() {
       setIsLoading(true)
       const tDelay = calculateTDelay(parent.padState.arousal)
       await new Promise(resolve => setTimeout(resolve, tDelay))
+      if (isCheckSendInFlightRef.current) { setIsLoading(false); return }
+      isCheckSendInFlightRef.current = true
       try {
         const res = await fetch('/api/game/check-send', {
           method: 'POST',
@@ -394,7 +400,7 @@ export default function ChatPage() {
           }
         })()
       } catch { /* silently fail */ }
-      finally { setIsLoading(false) }
+      finally { isCheckSendInFlightRef.current = false; setIsLoading(false) }
     }
   }
 
@@ -725,9 +731,18 @@ export default function ChatPage() {
       <div className={cn('bg-white border-r border-gray-100 flex flex-col', 'w-full md:w-72 md:shrink-0', isMobileChat ? 'hidden md:flex' : 'flex')}>
         {/* Header */}
         <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
-          <button type="button" onClick={() => router.push(`/scenario/${name}`)} className="text-muted hover:text-black transition-colors">
-            <ArrowLeft size={18} />
-          </button>
+          <ConfirmNavigationDialog
+            title="離開遊戲？"
+            description="離開後，目前的對話進度仍會保留在裝置上，下次從情境入口可繼續。任務紀錄與情緒狀態不會消失。"
+            confirmLabel="確認離開"
+            cancelLabel="繼續遊戲"
+            onConfirm={() => router.push(`/scenario/${name}`)}
+            trigger={
+              <button type="button" className="text-muted hover:text-black transition-colors">
+                <ArrowLeft size={18} />
+              </button>
+            }
+          />
           <div>
             <p className="text-sm font-medium text-black">{scenario.title}</p>
             <p className="text-xs text-muted">Phase {currentPhase}</p>
