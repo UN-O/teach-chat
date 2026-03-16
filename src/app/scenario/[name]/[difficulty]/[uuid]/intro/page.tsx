@@ -52,10 +52,10 @@ export default function IntroPage() {
   }
 
   return (
-    <main className="min-h-svh bg-background flex items-center justify-center px-6 py-16">
+    <main className="min-h-svh bg-background flex items-center justify-center px-6 py-0 md:py-16">
       <div className="w-full max-w-lg">
         {/* Progress dots */}
-        <div className="flex gap-2 justify-center mb-10">
+        <div className="flex gap-2 justify-center mb-2 md:mb-10">
           {steps.map((_, i) => (
             <div
               key={i}

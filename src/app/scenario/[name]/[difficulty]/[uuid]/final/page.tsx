@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useGameStore } from '@/store/game-store'
 import { ConfirmNavigationDialog } from '@/components/shared/confirm-navigation-dialog'
+import { Button } from '@/components/ui/button'
 import { getScenarioConfig } from '@/data/scenarios'
 import { ScoreCard, TotalScoreDisplay } from '@/components/game/score-card'
 import { SkillRadarChart } from '@/components/game/radar-chart'
@@ -180,6 +181,28 @@ export default function FinalPage() {
             返回情境列表
           </button>
         </div>
+          {/* Feedback floating button */}
+          <div className="fixed right-4 bottom-6 md:right-8 md:bottom-8 z-50">
+            <Button variant="secondary" asChild className="rounded-full p-3 shadow-md">
+              <a
+                href="https://forms.gle/zVYC78gu4ski3fXu6"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="回饋表單"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-[#2A3D66]"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12v6a2 2 0 0 1-2 2H7l-4 2V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6z" />
+                </svg>
+              </a>
+            </Button>
+          </div>
       </div>
     </main>
   )
