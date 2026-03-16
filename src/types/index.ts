@@ -3,6 +3,7 @@
 export type ScenarioName = 'fight' | 'abnormal'
 export type Difficulty = 'basic' | 'advanced'
 export type ParentId = 'A' | 'B'
+export type ActiveChatId = ParentId | 'teacher' | 'expert'
 export type Phase = 1 | 2
 export type GameState = 'init' | 'intro' | 'interact' | 'report'
 export type PlayerAvatar = 1 | 2 | 3 | 4
@@ -74,6 +75,47 @@ export interface ParentSession {
   lastCheckSendAt: number    // timestamp of last checkSend call
 }
 
+export interface TeacherPersona {
+  name: string
+  age: number
+  role: string                 // e.g., '八年乙班導師'
+  personality: string
+  speechStyle: string
+  catchphrases: string[]
+  coordinationContext: string  // scenario-specific coordination briefing
+}
+
+export interface CoordinationMissionConfig {
+  id: string
+  label: string
+  description: string
+}
+
+export interface TeacherConfig {
+  persona: TeacherPersona
+  coordinationMissions: CoordinationMissionConfig[]
+  initialMessage: string      // first message the teacher sends
+}
+
+export interface CoordinationMission {
+  id: string
+  label: string
+  completed: boolean
+}
+
+export interface TeacherSession {
+  messages: Message[]
+  coordinationMissions: CoordinationMission[]
+  hasGreeted: boolean
+}
+
+export type ExpertMessage = Message & { relatedTechniqueIds?: string[] }
+
+export interface ExpertSession {
+  messages: ExpertMessage[]
+  hasGreeted: boolean
+}
+
 export interface GameSession {
   sessionId: string
   scenarioName: ScenarioName
@@ -83,6 +125,8 @@ export interface GameSession {
   player: PlayerProfile
   parents: Record<ParentId, ParentSession>
   activeParent: ParentId | null
+  teacher?: TeacherSession      // only when scenario has teacher config
+  expert: ExpertSession
   createdAt: number
 }
 
@@ -137,6 +181,7 @@ export interface ScenarioConfig {
   storyLine: string
   techniques: TechniqueInfo[]
   parents: Record<ParentId, PersonaConfig>
+  teacher?: TeacherConfig       // optional: only fight-advanced has a teacher
   phase1: {
     description: string
     goals: string

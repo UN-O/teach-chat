@@ -1,10 +1,13 @@
 import { cn } from '@/lib/utils'
 
+type BubbleColor = 'teacher' | 'expert'
+
 interface ChatBubbleProps {
   content: string
   role: 'user' | 'assistant'
   isRead?: boolean
   timestamp?: number
+  bubbleColor?: BubbleColor
 }
 
 function formatTime(ts: number) {
@@ -15,17 +18,25 @@ function formatTime(ts: number) {
   })
 }
 
-export function ChatBubble({ content, role, isRead, timestamp }: ChatBubbleProps) {
+const assistantBubbleClass: Record<BubbleColor, string> = {
+  teacher: 'bg-emerald-50 text-emerald-900 border border-emerald-100 shadow-none',
+  expert: 'bg-purple-50 text-purple-900 border border-purple-100 shadow-none whitespace-pre-wrap',
+}
+
+export function ChatBubble({ content, role, isRead, timestamp, bubbleColor }: ChatBubbleProps) {
   const isUser = role === 'user'
+  const assistantClass = bubbleColor
+    ? assistantBubbleClass[bubbleColor]
+    : 'bg-white text-black shadow-soft'
 
   return (
     <div className={cn('flex items-end gap-2 mb-3', isUser ? 'flex-row-reverse' : 'flex-row')}>
       <div
         className={cn(
-          'max-w-[70%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed',
+          'max-w-[75%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed',
           isUser
             ? 'bg-[#4A90E2] text-white rounded-br-sm'
-            : 'bg-white text-black shadow-soft rounded-bl-sm',
+            : cn(assistantClass, 'rounded-bl-sm'),
         )}
       >
         {content}
