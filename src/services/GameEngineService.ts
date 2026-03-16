@@ -1,6 +1,6 @@
 import { generateText, Output } from 'ai'
 import { z } from 'zod'
-import { getLLMModel, googleProviderOptions } from '@/lib/llm/config'
+import { getDialogueLLMModel, getTaskLLMModel, googleProviderOptions } from '@/lib/llm/config'
 import {
   buildSystemPrompt,
   buildCheckMissionPrompt,
@@ -54,7 +54,7 @@ export async function generateMessage(
   phase: Phase,
   messages: Message[],
 ): Promise<string[]> {
-  const model = getLLMModel()
+  const model = getDialogueLLMModel()
   const systemPrompt = buildSystemPrompt(scenario, parentId, padState, memory, phase, messages)
 
   const { output } = await generateText({
@@ -74,7 +74,7 @@ export async function checkSend(
   phase: Phase,
   messages: Message[],
 ): Promise<{ shouldSend: boolean; suggestedMessage?: string }> {
-  const model = getLLMModel()
+  const model = getDialogueLLMModel()
   const prompt = buildCheckSendPrompt(scenario, parentId, phase, messages)
 
   const { output } = await generateText({
@@ -99,7 +99,7 @@ export async function checkMission(
     return currentMissions
   }
 
-  const model = getLLMModel()
+  const model = getTaskLLMModel()
   const prompt = buildCheckMissionPrompt(scenario, parentId, phase, messages)
 
   const { output } = await generateText({
@@ -124,7 +124,7 @@ export async function updatePAD(
 ): Promise<PADState> {
   if (messages.length < 2) return currentPAD
 
-  const model = getLLMModel()
+  const model = getDialogueLLMModel()
   const prompt = buildUpdatePADPrompt(scenario, parentId, currentPAD, messages)
 
   const { output } = await generateText({
@@ -150,7 +150,7 @@ export async function updateMemories(
 ): Promise<ParentMemory> {
   if (messages.length < 2) return currentMemory
 
-  const model = getLLMModel()
+  const model = getDialogueLLMModel()
   const prompt = buildUpdateMemoryPrompt(scenario, parentId, currentMemory, messages)
 
   const { output } = await generateText({

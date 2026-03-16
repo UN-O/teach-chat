@@ -1,6 +1,6 @@
 import { generateText, Output } from 'ai'
 import { z } from 'zod'
-import { getLLMModel, googleProviderOptions } from '@/lib/llm/config'
+import { getTaskLLMModel, googleProviderOptions } from '@/lib/llm/config'
 import type { ScenarioConfig, ParentId, Phase, Message, ScoreResult } from '@/types'
 
 const scoreResultSchema = z.object({
@@ -75,7 +75,7 @@ export async function scorePhase(
   phase: Phase,
   messages: Message[],
 ): Promise<ScoreResult[]> {
-  const model = getLLMModel()
+  const model = getTaskLLMModel()
   const prompt = buildScoringPrompt(scenario, parentId, phase, messages)
 
   const { output } = await generateText({

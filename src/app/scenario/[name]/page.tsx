@@ -18,6 +18,23 @@ export default function ScenarioIntroPage() {
   if (!meta) return null
 
   const scenario = getScenarioConfig(name, selectedDifficulty)
+  const participants = [
+    ...scenario.parentIds.map(parentId => {
+      const parent = scenario.parents[parentId]
+      return {
+        id: parentId,
+        name: parent.name,
+        role: parent.occupation,
+      }
+    }),
+    ...(scenario.teacher
+      ? [{
+          id: 'teacher',
+          name: scenario.teacher.persona.name,
+          role: scenario.teacher.persona.role,
+        }]
+      : []),
+  ]
 
   const handleStart = () => {
     const uuid = crypto.randomUUID()
@@ -109,16 +126,15 @@ export default function ScenarioIntroPage() {
 
           <div>
             <p className="text-xs text-muted mb-3 font-[var(--font-dm-sans)]">互動對象</p>
-            <div className={`grid gap-4 ${scenario.parentIds.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
-              {scenario.parentIds.map(parentId => {
-                const parent = scenario.parents[parentId]
+            <div className={`grid gap-4 ${participants.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+              {participants.map(participant => {
                 return (
-                  <div key={parentId} className="bg-background rounded-lg p-4">
+                  <div key={participant.id} className="bg-background rounded-lg p-4">
                     <div className="w-10 h-10 rounded-full bg-[#2A3D66] flex items-center justify-center mb-2">
-                      <span className="text-white text-base font-medium">{parent.name.slice(0, 1)}</span>
+                      <span className="text-white text-base font-medium">{participant.name.slice(0, 1)}</span>
                     </div>
-                    <p className="text-sm font-medium text-black">{parent.name}</p>
-                    <p className="text-xs text-muted leading-relaxed mt-0.5">{parent.occupation}</p>
+                    <p className="text-sm font-medium text-black">{participant.name}</p>
+                    <p className="text-xs text-muted leading-relaxed mt-0.5">{participant.role}</p>
                   </div>
                 )
               })}

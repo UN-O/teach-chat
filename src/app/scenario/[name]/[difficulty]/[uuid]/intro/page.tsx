@@ -121,7 +121,7 @@ export default function IntroPage() {
           )}
 
           <div className={cn(
-            'text-sm text-black/80 leading-relaxed whitespace-pre-line mb-8 flex-1 overflow-y-auto pr-1',
+            'text-sm text-black/80 leading-relaxed whitespace-pre-line flex-1 overflow-y-auto pr-1',
             hasStepImage && 'hidden md:block',
           )}>
             {currentContent.split('**').map((part, i) =>
@@ -131,7 +131,7 @@ export default function IntroPage() {
             )}
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between pt-4 mt-auto">
             {step > 0 ? (
               <button
                 onClick={() => {

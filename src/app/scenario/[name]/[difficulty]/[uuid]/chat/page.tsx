@@ -32,7 +32,7 @@ import type { ScenarioName, Difficulty, ParentId, Message, MissionItem, ActiveCh
 import { cn } from '@/lib/utils'
 
 const CHECK_MISSION_DEBOUNCE = 2000
-const CHECK_SEND_INTERVAL = 15000
+const CHECK_SEND_INTERVAL = 20000
 const SEND_GUARD_MS = 400
 const DUPLICATE_CONTENT_GUARD_MS = 1500
 
@@ -289,7 +289,7 @@ export default function ChatPage() {
     return () => clearTimeout(timer)
   }, [currentPhase, isViewingParent, activeChatId, session?.parents, flushNextBubble, addMessage])
 
-  // Phase 2: checkSend interval
+  // Phase 2: checkSend every 20s
   useEffect(() => {
     if (currentPhase !== 2 || !isViewingParent) return
     const pid = activeChatId as ParentId
@@ -582,6 +582,7 @@ export default function ChatPage() {
       : parentMissionLabels.map(m => ({ ...m, completed: false }))
     return { parentId: pid, title: `${formatParentDisplayName(pid)} 任務`, missions: items }
   })
+  const activeMissionPanel = missionPanels.find(panel => panel.parentId === activeParentId)
 
   // Chat header info
   const getChatHeader = () => {
@@ -733,10 +734,22 @@ export default function ChatPage() {
           </div>
         </div>
 
-        {/* Mission Panel */}
-        <div className="p-3 border-b border-gray-50 space-y-2">
+        {/* Mission Panel (desktop) */}
+        <div className="hidden p-3 border-b border-gray-50 space-y-2 md:block">
           {missionPanels.map(panel => (
             <MissionPanel key={panel.parentId} title={panel.title} missions={panel.missions} />
+          ))}
+        </div>
+
+        {/* Mission Panel (mobile, collapsed by default) */}
+        <div className="p-3 border-b border-gray-50 space-y-2 md:hidden">
+          {missionPanels.map(panel => (
+            <MissionPanel
+              key={panel.parentId}
+              title={panel.title}
+              missions={panel.missions}
+              defaultOpen={false}
+            />
           ))}
         </div>
 
@@ -867,9 +880,14 @@ export default function ChatPage() {
 
         {/* Mobile mission panel */}
         <div className="p-3 border-b border-gray-50 md:hidden space-y-2">
-          {missionPanels.map(panel => (
-            <MissionPanel key={panel.parentId} title={panel.title} missions={panel.missions} />
-          ))}
+          {activeMissionPanel && (
+            <MissionPanel
+              key={activeMissionPanel.parentId}
+              title={activeMissionPanel.title}
+              missions={activeMissionPanel.missions}
+              defaultOpen={false}
+            />
+          )}
         </div>
 
         {/* Phase indicator (parent chats only) */}

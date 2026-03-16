@@ -8,10 +8,11 @@ import type { MissionItem } from '@/types'
 interface MissionPanelProps {
   missions: MissionItem[]
   title?: string
+  defaultOpen?: boolean
 }
 
-export function MissionPanel({ missions, title }: MissionPanelProps) {
-  const [isOpen, setIsOpen] = useState(true)
+export function MissionPanel({ missions, title, defaultOpen = true }: MissionPanelProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
   const completedCount = missions.filter(m => m.completed).length
   const allDone = completedCount === missions.length
 

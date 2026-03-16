@@ -1,5 +1,5 @@
 import { streamText } from 'ai'
-import { getLLMModel, googleProviderOptions } from '@/lib/llm/config'
+import { getDialogueLLMModel, googleProviderOptions } from '@/lib/llm/config'
 import { buildSystemPrompt, getScenarioData } from '@/services/ScenarioService'
 import type { ScenarioName, Difficulty, ParentId, Phase, PADState, Message, ParentMemory } from '@/types'
 
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const systemPrompt = buildSystemPrompt(scenario, parentId, padState, memory, phase, messages)
 
   const result = streamText({
-    model: getLLMModel(),
+    model: getDialogueLLMModel(),
     prompt: systemPrompt,
     providerOptions: googleProviderOptions,
   })

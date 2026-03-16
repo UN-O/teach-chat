@@ -27,14 +27,14 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "老師怎麼辦...? [親師溝通篇] | 新手老師的專屬溝通模擬器",
+  title: "老師怎麼辦...? [親師溝通篇] | 新手老師的親師溝通模擬器",
   description:
     "教育現場的挑戰，往往不在講台上，而在下課後跳動的 LINE 訊息裡。我們打造了一個「零風險」的親師溝通情境模擬器，讓你面對焦慮家長不再害怕。結合真實校園劇本與 PAD 情緒模型，提供實戰演練與溝通技巧教戰守則。",
   openGraph: {
-    title: "老師怎麼辦...? 深呼吸，這裡是你最安全的溝通練習場。",
+    title: "老師怎麼辦...? | 新手老師的親師溝通模擬器",
     description:
       "免費親師溝通情境模擬器，結合 PAD 情緒模型與真實劇本，讓新手老師練就從容應對的底氣。",
-    images: ["/images/og-image.svg"],
+    images: ["/images/og-image.jpeg"],
   },
 };
 

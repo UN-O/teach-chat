@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRouter, useParams } from 'next/navigation'
 import { useGameStore } from '@/store/game-store'
 import type { ScenarioName, Difficulty, PlayerAvatar, EducationLevel, TeacherRole, PlayerProfile } from '@/types'
 import { cn } from '@/lib/utils'
+
+const PROFILE_STORAGE_KEY = 'teach-chat-player-profile'
 
 const avatarSrc: Record<PlayerAvatar, string> = {
   1: '/images/avatars/1.svg',
@@ -37,10 +39,34 @@ export default function InitPage() {
   const [educationLevel, setEducationLevel] = useState<EducationLevel>('elementary')
   const [role, setRole] = useState<TeacherRole>('full')
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(PROFILE_STORAGE_KEY)
+      if (!raw) return
+
+      const saved = JSON.parse(raw) as Partial<PlayerProfile>
+      if (saved.avatar === 1 || saved.avatar === 2 || saved.avatar === 3 || saved.avatar === 4) {
+        setAvatar(saved.avatar)
+      }
+      if (typeof saved.name === 'string') {
+        setName(saved.name)
+      }
+      if (saved.educationLevel === 'elementary' || saved.educationLevel === 'middle') {
+        setEducationLevel(saved.educationLevel)
+      }
+      if (saved.role === 'intern' || saved.role === 'parttime' || saved.role === 'substitute' || saved.role === 'full') {
+        setRole(saved.role)
+      }
+    } catch {
+      localStorage.removeItem(PROFILE_STORAGE_KEY)
+    }
+  }, [])
+
   const handleStart = () => {
     if (!name.trim()) return
 
     const player: PlayerProfile = { avatar, name: name.trim(), educationLevel, role }
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(player))
     initSession(
       params.name as ScenarioName,
       params.difficulty as Difficulty,
