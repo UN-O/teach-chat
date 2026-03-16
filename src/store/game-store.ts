@@ -17,6 +17,8 @@ import type {
   PlayerProfile,
   ScenarioName,
   Difficulty,
+  CoordinationMission,
+  ExpertMessage,
 } from '@/types'
 
 interface GameStore {
@@ -51,6 +53,16 @@ interface GameStore {
   setActiveParent: (parentId: ParentId | null) => void
   setGameState: (state: GameState) => void
   updateLastCheckSend: (parentId: ParentId) => void
+
+  // Teacher (colleague, fight-advanced only)
+  addTeacherMessage: (message: Message) => void
+  updateTeacherMission: (missionId: string, completed: boolean) => void
+  setTeacherGreeted: () => void
+
+  // Expert (mentor, always present)
+  addExpertMessage: (message: ExpertMessage) => void
+  setExpertGreeted: () => void
+  markExpertMessagesRead: () => void
 
   clearSession: () => void
 }
@@ -104,6 +116,7 @@ export const useGameStore = create<GameStore>()(
 
       initSession: (name, difficulty, player) => {
         const sessionId = crypto.randomUUID()
+        const scenario = getScenarioConfig(name, difficulty)
         const session: GameSession = {
           sessionId,
           scenarioName: name,
@@ -116,6 +129,18 @@ export const useGameStore = create<GameStore>()(
             B: createInitialParentSession('B', name, difficulty),
           },
           activeParent: null,
+          teacher: scenario.teacher
+            ? {
+                messages: [],
+                coordinationMissions: scenario.teacher.coordinationMissions.map(m => ({
+                  id: m.id,
+                  label: m.label,
+                  completed: false,
+                })),
+                hasGreeted: false,
+              }
+            : undefined,
+          expert: { messages: [], hasGreeted: false },
           createdAt: Date.now(),
         }
         set({ session })
@@ -434,6 +459,92 @@ export const useGameStore = create<GameStore>()(
                   ...state.session.parents[parentId],
                   lastCheckSendAt: Date.now(),
                 },
+              },
+            },
+          }
+        })
+      },
+
+      addTeacherMessage: (message) => {
+        set(state => {
+          if (!state.session?.teacher) return state
+          return {
+            session: {
+              ...state.session,
+              teacher: {
+                ...state.session.teacher,
+                messages: [...state.session.teacher.messages, message],
+              },
+            },
+          }
+        })
+      },
+
+      updateTeacherMission: (missionId, completed) => {
+        set(state => {
+          if (!state.session?.teacher) return state
+          return {
+            session: {
+              ...state.session,
+              teacher: {
+                ...state.session.teacher,
+                coordinationMissions: state.session.teacher.coordinationMissions.map(m =>
+                  m.id === missionId ? { ...m, completed: m.completed || completed } : m,
+                ),
+              },
+            },
+          }
+        })
+      },
+
+      setTeacherGreeted: () => {
+        set(state => {
+          if (!state.session?.teacher) return state
+          return {
+            session: {
+              ...state.session,
+              teacher: { ...state.session.teacher, hasGreeted: true },
+            },
+          }
+        })
+      },
+
+      addExpertMessage: (message) => {
+        set(state => {
+          if (!state.session) return state
+          return {
+            session: {
+              ...state.session,
+              expert: {
+                ...state.session.expert,
+                messages: [...state.session.expert.messages, message],
+              },
+            },
+          }
+        })
+      },
+
+      setExpertGreeted: () => {
+        set(state => {
+          if (!state.session) return state
+          return {
+            session: {
+              ...state.session,
+              expert: { ...state.session.expert, hasGreeted: true },
+            },
+          }
+        })
+      },
+
+      markExpertMessagesRead: () => {
+        set(state => {
+          if (!state.session) return state
+          return {
+            session: {
+              ...state.session,
+              expert: {
+                ...state.session.expert,
+                messages: state.session.expert.messages.map(m => ({ ...m, isRead: true })),
               },
             },
           }
