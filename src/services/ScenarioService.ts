@@ -307,9 +307,12 @@ export function buildExpertResponsePrompt(
 ): string {
   const parentChatContext = Object.entries(allChats.parentsMessages)
     .map(([pid, msgs]) => {
-      const name = scenario.parents[pid as ParentId].name
+      const parent = scenario.parents[pid as ParentId]
+      const displayName = parent.childRelationLabel
+        ? `${parent.name}（${parent.childRelationLabel}）`
+        : parent.name
       const last5 = msgs.slice(-5)
-      return `【與 ${name} 的對話（最近 ${last5.length} 則）】\n${formatMessages(last5)}`
+      return `【與 ${displayName} 的對話（最近 ${last5.length} 則）】\n${formatMessages(last5)}`
     })
     .join('\n\n')
 
@@ -345,8 +348,9 @@ ${userMessage}
 
 ## 你的回應指引
 - 以溫暖、同理又專業的資深老師語氣回答
-- 回應長度：500–1000 字，詳細且有深度
+- 字數限制必須直接遵守：輸出的 content 全文控制在 300–800 字內，不足請補足，超過請自行刪減
 - 善用段落分隔，條列式說明步驟時使用數字清單
+- 回應內容請使用 Markdown 呈現（可用H1-3、粗體、斜體、清單、表格、引用） 來豐富回答樣態
 - 可以具體引用上方的對話室內容來舉例說明
 - 在回應中適時提到相關的技巧（例如：「這正是 T13 憤怒降溫所說的…」）
 - 繁體中文

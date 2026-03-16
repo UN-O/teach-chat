@@ -163,19 +163,23 @@ export default function PolishTextPage() {
                 </p>
                 <div className="space-y-3">
                   {result.improvements.map((imp, i) => (
-                    <div key={i} className="flex gap-3">
-                      <Link
-                        href={`/docs/techniques/${imp.techniqueId.replace('T', '').padStart(2, '0')}`}
-                        target="_blank"
-                        className="shrink-0 text-xs px-2 py-1 rounded-md bg-[#B6D0E2]/30 text-[#2A3D66] hover:bg-[#B6D0E2]/50 transition-colors font-medium"
-                      >
-                        {imp.techniqueId}
-                      </Link>
-                      <div>
-                        <p className="text-xs font-medium text-black mb-0.5">{imp.techniqueName}</p>
-                        <p className="text-xs text-black/60 leading-relaxed">{imp.note}</p>
+                    <Link
+                      key={i}
+                      href={`/docs/techniques/${imp.techniqueId.replace('T', '').padStart(2, '0')}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block rounded-lg border border-background/40 bg-[#F5F8FF] px-4 py-3 transition-colors hover:bg-[#ECF3FF]"
+                    >
+                      <div className="flex gap-3">
+                        <span className="shrink-0 self-start text-xs px-2 py-1 rounded-md bg-background/40 text-secondary font-medium">
+                          {imp.techniqueId}
+                        </span>
+                        <div>
+                          <p className="text-xs font-medium text-black mb-0.5">{imp.techniqueName}</p>
+                          <p className="text-xs text-black/60 leading-relaxed">{imp.note}</p>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>

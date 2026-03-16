@@ -40,7 +40,7 @@ export function ChatTip({ scenarioName, difficulty, parentId, phase, messages, p
 
   if (!hasLoaded) {
     return (
-      <div className="px-4 pt-2">
+      <div className="px-4 p-2">
         <button
           type="button"
           onClick={fetchTip}
@@ -58,7 +58,7 @@ export function ChatTip({ scenarioName, difficulty, parentId, phase, messages, p
   }
 
   return (
-    <div className="px-4 pt-2">
+    <div className="px-4 p-2">
       <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
         <Lightbulb size={13} className="text-amber-500 mt-0.5 shrink-0" />
         <p className="flex-1 text-xs text-amber-800 leading-relaxed">{tip}</p>

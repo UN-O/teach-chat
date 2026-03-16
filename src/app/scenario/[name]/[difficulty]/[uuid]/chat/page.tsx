@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Info, RotateCcw, BookOpen } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { useGameStore } from '@/store/game-store'
 import { getScenarioConfig } from '@/data/scenarios'
 import { ConfirmNavigationDialog } from '@/components/shared/confirm-navigation-dialog'
@@ -34,6 +36,45 @@ const CHECK_SEND_INTERVAL = 15000
 const SEND_GUARD_MS = 400
 const DUPLICATE_CONTENT_GUARD_MS = 1500
 
+function formatMessageTime(ts: number) {
+  return new Date(ts).toLocaleTimeString('zh-TW', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+}
+
+function inlineTechniqueLinks(content: string, techniqueIds: string[] = []) {
+  const contentTechniqueIds = Array.from(content.matchAll(/T\d{2}/g)).map(match => match[0])
+  const allTechniqueIds = Array.from(new Set([...techniqueIds, ...contentTechniqueIds])).slice(0, 3)
+  let output = content
+  const linkedIds = new Set<string>()
+
+  for (const tid of allTechniqueIds) {
+    const docId = tid.replace('T', '').padStart(2, '0')
+    const linkMarkdown = ` [技巧 ${tid}](/docs/techniques/${docId})`
+    const pattern = new RegExp(`\\b(${tid})\\b`)
+
+    if (pattern.test(output)) {
+      output = output.replace(pattern, `$1${linkMarkdown}`)
+      linkedIds.add(tid)
+    }
+  }
+
+  const remainingLinks = allTechniqueIds
+    .filter(tid => !linkedIds.has(tid))
+    .map(tid => {
+      const docId = tid.replace('T', '').padStart(2, '0')
+      return `[技巧 ${tid}](/docs/techniques/${docId})`
+    })
+
+  if (remainingLinks.length > 0) {
+    output = `${output}\n\n${remainingLinks.join(' ')}`
+  }
+
+  return output
+}
+
 export default function ChatPage() {
   const params = useParams<{ name: string; difficulty: string; uuid: string }>()
   const router = useRouter()
@@ -52,6 +93,8 @@ export default function ChatPage() {
   const setParentOnline = useGameStore(s => s.setParentOnline)
   const setActiveParent = useGameStore(s => s.setActiveParent)
   const updateLastCheckSend = useGameStore(s => s.updateLastCheckSend)
+  const updateParentPAD = useGameStore(s => s.updatePAD)
+  const updateParentMemory = useGameStore(s => s.updateMemory)
   const setPhaseDone = useGameStore(s => s.setPhaseDone)
   const resetParentPhaseState = useGameStore(s => s.resetParentPhaseState)
   const addTeacherMessage = useGameStore(s => s.addTeacherMessage)
@@ -86,6 +129,15 @@ export default function ChatPage() {
   const parentSession = session?.parents[activeParentId]
   const teacherSession = session?.teacher
   const expertSession = session?.expert
+
+  const isParentMissionsDone = useCallback((parentId: ParentId) => {
+    if (!session) return false
+    const phaseMissions = currentPhase === 1
+      ? session.parents[parentId].phase1Missions
+      : session.parents[parentId].phase2Missions
+
+    return phaseMissions.length > 0 && phaseMissions.every(m => m.completed)
+  }, [session, currentPhase])
 
   // Active messages based on current chat
   const messages: Message[] = isViewingParent
@@ -184,6 +236,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (currentPhase !== 2 || !session || !isViewingParent) return
     const pid = activeChatId as ParentId
+    if (isParentMissionsDone(pid)) return
     if (phase2AutoTriggerRef.current[pid]) return
 
     const parent = session.parents[pid]
@@ -218,7 +271,7 @@ export default function ChatPage() {
     }
 
     void runAutoTrigger()
-  }, [currentPhase, session, activeChatId, isViewingParent, name, difficulty, scenario, setParentOnline, updateLastCheckSend, addPendingSeq, addMessage])
+  }, [currentPhase, session, activeChatId, isViewingParent, name, difficulty, scenario, setParentOnline, updateLastCheckSend, addPendingSeq, addMessage, isParentMissionsDone])
 
   // Phase 2: Flush pending seq bubbles
   useEffect(() => {
@@ -240,6 +293,7 @@ export default function ChatPage() {
   useEffect(() => {
     if (currentPhase !== 2 || !isViewingParent) return
     const pid = activeChatId as ParentId
+    if (isParentMissionsDone(pid)) return
     const parent = session?.parents[pid]
     if (!parent?.isOnline) return
 
@@ -264,7 +318,7 @@ export default function ChatPage() {
 
     checkSendIntervalRef.current = setInterval(runCheckSend, CHECK_SEND_INTERVAL)
     return () => { if (checkSendIntervalRef.current) clearInterval(checkSendIntervalRef.current) }
-  }, [currentPhase, isViewingParent, activeChatId, session, name, difficulty, updateLastCheckSend, addPendingSeq])
+  }, [currentPhase, isViewingParent, activeChatId, session, name, difficulty, updateLastCheckSend, addPendingSeq, isParentMissionsDone])
 
   // Background checkMission
   const triggerCheckMission = useCallback(async (parentId: ParentId, msgs: Message[]) => {
@@ -313,15 +367,32 @@ export default function ChatPage() {
         })
         const data = await res.json() as { shouldSend: boolean; bubbles: string[] }
         if (data.bubbles.length > 0) addPendingSeq(pid, data.bubbles)
-        fetch('/api/game/update-pad', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            scenarioName: name, difficulty, parentId: pid,
-            currentPAD: parent.padState, currentMemory: parent.memory,
-            messages: [...parent.messages, userMsg],
-          }),
-        }).catch(() => {})
+        void (async () => {
+          try {
+            const padRes = await fetch('/api/game/update-pad', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                scenarioName: name,
+                difficulty,
+                parentId: pid,
+                currentPAD: parent.padState,
+                currentMemory: parent.memory,
+                messages: [...parent.messages, userMsg],
+              }),
+            })
+
+            const padData = await padRes.json() as {
+              pad: { pleasure: number; arousal: number; dominance: number }
+              memory: { events: string; teacherImpression: string }
+            }
+
+            updateParentPAD(pid, padData.pad)
+            updateParentMemory(pid, padData.memory)
+          } catch {
+            // silently fail to keep send flow non-blocking
+          }
+        })()
       } catch { /* silently fail */ }
       finally { setIsLoading(false) }
     }
@@ -525,7 +596,7 @@ export default function ChatPage() {
     if (activeChatId === 'expert') {
       return {
         avatarText: '顧',
-        avatarBg: 'bg-[#6B4F8A]',
+        avatarBg: 'bg-accent',
         title: '照顧我的資深教師',
         subtitle: '資深顧問',
       }
@@ -546,28 +617,71 @@ export default function ChatPage() {
       const expertMsgs = expertSession?.messages ?? []
       return expertMsgs.map(msg => (
         <div key={msg.id}>
-          <ChatBubble
-            content={msg.content}
-            role={msg.role}
-            isRead={msg.isRead}
-            timestamp={msg.timestamp}
-            bubbleColor={msg.role === 'assistant' ? 'expert' : undefined}
-          />
-          {msg.role === 'assistant' && (msg as ExpertMessage).relatedTechniqueIds && (msg as ExpertMessage).relatedTechniqueIds!.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-1 mb-2 ml-12">
-              {(msg as ExpertMessage).relatedTechniqueIds!.map(tid => (
-                <a
-                  key={tid}
-                  href={`/docs/techniques/${tid.replace('T', '').padStart(2, '0')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-600 border border-purple-200 hover:bg-purple-100 transition-colors"
+          {msg.role === 'assistant' ? (
+            <div className="mb-4">
+              <div className="px-1 text-sm leading-7 text-[#7A1F22]">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h1: ({ children }) => <h1 className="text-base font-bold mb-2 mt-5 first:mt-0">{children}</h1>,
+                    h2: ({ children }) => <h2 className="text-sm font-bold mb-2 mt-5 first:mt-0">{children}</h2>,
+                    h3: ({ children }) => <h3 className="text-sm font-semibold mb-1.5 mt-4 first:mt-0">{children}</h3>,
+                    p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                    ul: ({ children }) => <ul className="mb-3 list-disc pl-5 space-y-1.5">{children}</ul>,
+                    ol: ({ children }) => <ol className="mb-3 list-decimal pl-5 space-y-1.5">{children}</ol>,
+                    li: ({ children }) => <li className="leading-7 marker:text-[#C53B3F]">{children}</li>,
+                    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                    em: ({ children }) => <em className="italic">{children}</em>,
+                    code: ({ children }) => (
+                      <code className="px-1 py-0.5 rounded bg-black/10 text-[0.9em]">{children}</code>
+                    ),
+                    blockquote: ({ children }) => (
+                      <blockquote className="mb-3 border-l-2 border-[#FFD2D3] pl-3 text-[#8B3A3D]">{children}</blockquote>
+                    ),
+                    table: ({ children }) => (
+                      <div className="mb-3 overflow-x-auto">
+                        <table className="w-full border-collapse text-xs">{children}</table>
+                      </div>
+                    ),
+                    thead: ({ children }) => <thead className="bg-[#FFF1F1]">{children}</thead>,
+                    th: ({ children }) => <th className="border border-[#FFD2D3] px-2 py-1 text-left font-semibold">{children}</th>,
+                    td: ({ children }) => <td className="border border-[#FFD2D3] px-2 py-1 align-top">{children}</td>,
+                    a: ({ href, children }) => {
+                      if (href?.startsWith('/docs/techniques/')) {
+                        return (
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[11px] px-2 py-0 rounded-md bg-[#FFF1F1] text-[#C53B3F] border border-[#FFD2D3] hover:bg-[#FFE3E4] transition-colors align-middle"
+                          >
+                            <BookOpen size={10} />
+                            {children}
+                          </a>
+                        )
+                      }
+
+                      return (
+                        <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                          {children}
+                        </a>
+                      )
+                    },
+                  }}
                 >
-                  <BookOpen size={10} />
-                  技巧 {tid}
-                </a>
-              ))}
+                  {inlineTechniqueLinks(msg.content, (msg as ExpertMessage).relatedTechniqueIds ?? [])}
+                </ReactMarkdown>
+              </div>
+              <span className="mt-1 block text-[10px] text-muted">{formatMessageTime(msg.timestamp)}</span>
             </div>
+          ) : (
+            <ChatBubble
+              content={msg.content}
+              role={msg.role}
+              isRead={msg.isRead}
+              timestamp={msg.timestamp}
+              userBubbleColor="accent"
+            />
           )}
         </div>
       ))
@@ -665,7 +779,7 @@ export default function ChatPage() {
       </div>
 
       {/* Chatroom */}
-      <div className={cn('flex-1 flex flex-col bg-[#E8EFF5]', !isMobileChat && 'hidden md:flex')}>
+      <div className={cn('flex-1 flex flex-col', activeChatId === 'expert' ? 'bg-white' : 'bg-[#E8EFF5]', !isMobileChat && 'hidden md:flex')}>
         {/* Chat header */}
         <div className="bg-white px-4 py-3 border-b border-gray-100 flex items-center gap-3">
           <button onClick={() => setIsMobileChat(false)} className="md:hidden text-muted hover:text-black transition-colors">
@@ -767,7 +881,7 @@ export default function ChatPage() {
 
         {/* Expert info banner */}
         {activeChatId === 'expert' && (
-          <div className="mx-4 mt-3 px-4 py-2 bg-purple-50 border border-purple-200 rounded-lg text-xs text-purple-700 text-center">
+          <div className="mx-4 mt-3 px-4 py-2 bg-[#FFF1F1] border border-[#FFD2D3] rounded-lg text-xs text-[#B93A3E] text-center">
             資深老師會根據所有聊天室的最新內容回覆你，回應較詳細，請耐心等候。
           </div>
         )}
@@ -790,7 +904,7 @@ export default function ChatPage() {
           {renderMessages()}
           {isLoading && (
             <div className="flex items-center gap-1.5 mb-3">
-              <div className={cn('w-9 h-9 rounded-full flex items-center justify-center shrink-0', activeChatId === 'teacher' ? 'bg-emerald-600' : activeChatId === 'expert' ? 'bg-[#6B4F8A]' : 'bg-secondary')}>
+              <div className={cn('w-9 h-9 rounded-full flex items-center justify-center shrink-0', activeChatId === 'teacher' ? 'bg-emerald-600' : activeChatId === 'expert' ? 'bg-accent' : 'bg-secondary')}>
                 <span className="text-white text-sm">
                   {activeChatId === 'teacher' ? scenario.teacher!.persona.name.slice(0, 1) : activeChatId === 'expert' ? '顧' : scenario.parents[activeParentId].name.slice(0, 1)}
                 </span>

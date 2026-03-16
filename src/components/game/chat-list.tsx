@@ -38,9 +38,9 @@ interface ChatListProps {
 
 function ParentAvatar({ name, isOnline }: { name: string; isOnline: boolean }) {
   return (
-    <div className="relative flex-shrink-0">
-      <div className="w-12 h-12 rounded-full bg-[#2A3D66] flex items-center justify-center">
-        <span className="text-white text-lg font-medium font-[var(--font-noto-tc)]">{name.slice(0, 1)}</span>
+    <div className="relative shrink-0">
+      <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+        <span className="text-white text-lg font-(--font-noto-tc)">{name.slice(0, 1)}</span>
       </div>
       <div className={cn('absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white', isOnline ? 'bg-green-400' : 'bg-gray-300')} />
     </div>
@@ -49,7 +49,7 @@ function ParentAvatar({ name, isOnline }: { name: string; isOnline: boolean }) {
 
 function TeacherAvatar() {
   return (
-    <div className="relative flex-shrink-0">
+    <div className="relative shrink-0">
       <div className="w-12 h-12 rounded-full bg-emerald-600 flex items-center justify-center">
         <span className="text-white text-xs font-medium">同事</span>
       </div>
@@ -59,8 +59,8 @@ function TeacherAvatar() {
 
 function ExpertAvatar() {
   return (
-    <div className="relative flex-shrink-0">
-      <div className="w-12 h-12 rounded-full bg-[#6B4F8A] flex items-center justify-center">
+    <div className="relative shrink-0">
+      <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center">
         <span className="text-white text-xs font-medium text-center leading-tight">資深<br/>老師</span>
       </div>
     </div>
@@ -84,7 +84,7 @@ export function ChatList({ items, activeChatId, onSelectParent, onSelectTeacher,
                 className={cn(
                   'w-full flex items-center gap-3 px-4 py-3.5 text-left',
                   'border-b border-gray-50 transition-colors',
-                  isActive ? 'bg-[#B6D0E2]/30' : 'hover:bg-gray-50',
+                  isActive ? 'bg-background/30' : 'hover:bg-gray-50',
                 )}
               >
                 <ParentAvatar name={item.name} isOnline={item.isOnline} />
@@ -92,13 +92,13 @@ export function ChatList({ items, activeChatId, onSelectParent, onSelectTeacher,
                   <div className="flex items-center justify-between mb-0.5">
                     <span className="text-sm font-medium text-black truncate">{item.name}</span>
                     {item.phase1Done && (
-                      <span className="text-[10px] text-[#4A90E2] bg-[#4A90E2]/10 px-1.5 py-0.5 rounded-md flex-shrink-0 ml-1">P1✓</span>
+                      <span className="text-[10px] text-accent-alt bg-accent-alt/10 px-1.5 py-0.5 rounded-md shrink-0 ml-1">P1✓</span>
                     )}
                   </div>
                   <p className="text-xs text-muted truncate">{item.lastMessage || '尚未開始對話'}</p>
                 </div>
                 {item.unreadCount > 0 && (
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#FF5A5F] flex items-center justify-center">
+                  <div className="shrink-0 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
                     <span className="text-white text-[10px] font-medium">{item.unreadCount}</span>
                   </div>
                 )}
@@ -123,7 +123,7 @@ export function ChatList({ items, activeChatId, onSelectParent, onSelectTeacher,
                   <div className="flex items-center justify-between mb-0.5">
                     <span className="text-sm font-medium text-black truncate">{item.name}</span>
                     {item.hasCoordinated && (
-                      <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md flex-shrink-0 ml-1 border border-emerald-200">協調✓</span>
+                      <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md shrink-0 ml-1 border border-emerald-200">協調✓</span>
                     )}
                   </div>
                   <p className="text-xs text-muted truncate">{item.lastMessage || '等待協調…'}</p>
@@ -141,19 +141,19 @@ export function ChatList({ items, activeChatId, onSelectParent, onSelectTeacher,
                 className={cn(
                   'w-full flex items-center gap-3 px-4 py-3.5 text-left',
                   'border-b border-gray-50 transition-colors',
-                  isActive ? 'bg-purple-50' : 'hover:bg-gray-50',
+                  isActive ? 'bg-[#FFF1F1]' : 'hover:bg-gray-50',
                 )}
               >
                 <ExpertAvatar />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-0.5">
                     <span className="text-sm font-medium text-black truncate">{item.name}</span>
-                    <span className="text-[10px] text-purple-500 bg-purple-50 px-1.5 py-0.5 rounded-md flex-shrink-0 ml-1 border border-purple-200">資深顧問</span>
+                    <span className="text-[10px] text-[#C53B3F] bg-[#FFF1F1] px-1.5 py-0.5 rounded-md shrink-0 ml-1 border border-[#FFD2D3]">資深顧問</span>
                   </div>
                   <p className="text-xs text-muted truncate">{item.lastMessage || '點擊開始諮詢'}</p>
                 </div>
                 {item.unreadCount > 0 && (
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#6B4F8A] flex items-center justify-center">
+                  <div className="shrink-0 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
                     <span className="text-white text-[10px] font-medium">{item.unreadCount}</span>
                   </div>
                 )}
