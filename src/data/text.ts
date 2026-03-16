@@ -197,7 +197,7 @@ export const aboutText = {
     {
       name: "UN-O",
       role: "清大 AI 助教負責人",
-      desc: "清大教育學院博士班・AI 融入教育實務研究",
+      desc: "清大竹師教育學院博士班・AI 融入教育實務研究",
     },
     {
       name: "芸辰",
