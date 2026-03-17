@@ -908,7 +908,7 @@ export default function ChatPage() {
         {/* Phase indicator (parent chats only) */}
         {isViewingParent && currentPhase === 1 && (
           <div className="mx-4 mt-3 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 text-center">
-            Phase 1：請傳送首訊通知家長，對方目前未上線
+            Phase 1：請傳送訊息通知家長，對方目前未上線
           </div>
         )}
 

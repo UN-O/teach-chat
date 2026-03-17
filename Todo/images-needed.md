@@ -39,7 +39,7 @@
 
 | 圖片檔案 | 建議尺寸 | 類型 | 視覺描述 |
 |---|---|---|---|
-| `public/images/technique-t01.svg` | 600 × 400px | 插畫 | T01 首訊破冰：老師傳出第一則訊息，家長安心閱讀的場景，溫暖色調 |
+| `public/images/technique-t01.svg` | 600 × 400px | 插畫 | T01 訊息破冰：老師傳出第一則訊息，家長安心閱讀的場景，溫暖色調 |
 | `public/images/technique-t02.svg` | 600 × 400px | 插畫 | T02 事實分層：資訊分成兩層（事實層 vs 擔憂層）的視覺化呈現 |
 | `public/images/technique-t04.svg` | 600 × 400px | 插畫 | T04 情緒轉換：生氣文字轉換成溫和文字的對比示意 |
 | `public/images/technique-t06.svg` | 600 × 400px | 插畫 | T06 降溫技術：溫度計從高往低，文字承接情緒的示意 |
