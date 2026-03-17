@@ -93,7 +93,7 @@ export default function PolishTextPage() {
             placeholder="把你想傳給家長的訊息貼在這裡…&#10;例如：「你孩子今天打人了，你要來學校一趟。」"
             disabled={isLoading}
             rows={5}
-            className="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 text-sm leading-relaxed outline-none focus:border-[#2A3D66] focus:ring-1 focus:ring-[#2A3D66]/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 text-[16px] md:text-sm leading-relaxed outline-none focus:border-[#2A3D66] focus:ring-1 focus:ring-[#2A3D66]/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <div className="flex items-center justify-between mt-3">
             <span className="text-xs text-muted">{draft.length} 字</span>

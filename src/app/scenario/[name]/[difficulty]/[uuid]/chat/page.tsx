@@ -807,7 +807,7 @@ export default function ChatPage() {
       </div>
 
       {/* Chatroom */}
-      <div className={cn('flex-1 flex flex-col', activeChatId === 'expert' ? 'bg-white' : 'bg-[#E8EFF5]', !isMobileChat && 'hidden md:flex')}>
+      <div className={cn('flex-1 min-w-0 flex flex-col', activeChatId === 'expert' ? 'bg-white' : 'bg-[#E8EFF5]', !isMobileChat && 'hidden md:flex')}>
         {/* Chat header */}
         <div className="bg-white px-4 py-3 border-b border-gray-100 flex items-center gap-3">
           <button onClick={() => setIsMobileChat(false)} className="md:hidden text-muted hover:text-black transition-colors">
@@ -908,7 +908,7 @@ export default function ChatPage() {
         {/* Phase indicator (parent chats only) */}
         {isViewingParent && currentPhase === 1 && (
           <div className="mx-4 mt-3 px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700 text-center">
-            Phase 1：請傳送首訊通知家長，對方目前未上線
+            Phase 1：請傳送訊息通知家長，對方目前未上線
           </div>
         )}
 
@@ -920,7 +920,7 @@ export default function ChatPage() {
         )}
 
         {/* Messages */}
-        <div className={cn('flex-1 px-4 py-4 space-y-1', isMessagesEmpty && !isLoading ? 'overflow-y-hidden' : 'overflow-y-auto')}>
+        <div className={cn('flex-1 px-4 py-4 space-y-1 overflow-x-hidden', isMessagesEmpty && !isLoading ? 'overflow-y-hidden' : 'overflow-y-auto')}>
           {isMessagesEmpty && (
             <div className="flex items-center justify-center h-full">
               <p className="text-sm text-muted text-center">

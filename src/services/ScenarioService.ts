@@ -281,7 +281,7 @@ interface AllChatsContext {
   teacherMessages?: Message[]
 }
 
-const TECHNIQUES_CATALOG = `T01 首訊破冰與開場設計 / T02 事實與擔憂分層陳述 / T03 訊息節奏與分段控制 / T04 情緒語氣的文字轉換 / T05 讀取後不回應的處理 / T06 升溫情況的降溫技術 / T07 適當收尾與後續約定 / T08 保留紀錄的意識 / T09 媒介判斷：何時不該用 LINE / T10 雙方家長分開通知的順序設計 / T11 事實陳述不帶定罪語氣 / T12 傷情通報的精確用語 / T13 憤怒家長的即時文字降溫 / T14 不在 LINE 上做責任判定 / T15 後續處置措施的主動說明 / T16 引導從 LINE 轉為面談 / T17 受傷方家長的安撫語氣 / T18 截圖風險意識與用字自審`
+const TECHNIQUES_CATALOG = `T01 訊息破冰與開場設計 / T02 事實與擔憂分層陳述 / T03 訊息節奏與分段控制 / T04 情緒語氣的文字轉換 / T05 讀取後不回應的處理 / T06 升溫情況的降溫技術 / T07 適當收尾與後續約定 / T08 保留紀錄的意識 / T09 媒介判斷：何時不該用 LINE / T10 雙方家長分開通知的順序設計 / T11 事實陳述不帶定罪語氣 / T12 傷情通報的精確用語 / T13 憤怒家長的即時文字降溫 / T14 不在 LINE 上做責任判定 / T15 後續處置措施的主動說明 / T16 引導從 LINE 轉為面談 / T17 受傷方家長的安撫語氣 / T18 截圖風險意識與用字自審`
 
 export function buildExpertGreetingPrompt(scenario: ScenarioConfig): string {
   return `你是「照顧我的資深教師」，一位擁有豐富教學與親師溝通經驗的資深老師，正在陪伴一位新手老師面對一個真實的親師溝通挑戰。
@@ -436,7 +436,7 @@ ${TECHNIQUES_CATALOG}
   "improvements": [
     {
       "techniqueId": "T01",
-      "techniqueName": "首訊破冰與開場設計",
+      "techniqueName": "訊息破冰與開場設計",
       "note": "改動說明（20–40字）"
     }
   ],

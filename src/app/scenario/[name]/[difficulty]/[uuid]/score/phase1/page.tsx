@@ -102,7 +102,7 @@ export default function Phase1ScorePage() {
             Phase 1 結算
           </p>
           <h1 className="font-(--font-chiron) text-3xl text-black">
-            首訊通知評分
+            訊息通知評分
           </h1>
         </div>
 
