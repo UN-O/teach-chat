@@ -45,7 +45,7 @@ export function SubmitForm() {
     "w-full border-0 rounded-md bg-white " +
     "shadow-soft " +
     "px-4 py-2.5 " +
-    "font-body text-sm text-primary " +
+    "font-body text-[16px] md:text-sm text-primary " +
     "placeholder:text-muted " +
     "focus:outline-none focus:shadow-md " +
     "transition-shadow duration-200";

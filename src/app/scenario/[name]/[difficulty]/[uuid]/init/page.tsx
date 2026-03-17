@@ -131,7 +131,7 @@ export default function InitPage() {
             value={name}
             onChange={e => setName(e.target.value)}
             placeholder="王老師"
-            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#2A3D66] focus:ring-1 focus:ring-[#2A3D66]/20 transition-colors"
+            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-[16px] md:text-sm outline-none focus:border-[#2A3D66] focus:ring-1 focus:ring-[#2A3D66]/20 transition-colors"
           />
         </div>
 
