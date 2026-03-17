@@ -74,8 +74,8 @@ export default function IntroPage() {
           </h2>
 
           {hasStepImage && (
-            <div className="mb-4 md:mb-6 [@media(max-height:580px)]:hidden">
-              <div className="relative bg-background rounded-xl aspect-[4/5] w-full overflow-hidden flex items-center justify-center md:hidden">
+            <div className="flex-1 min-h-0 flex flex-col mb-0 md:flex-none md:mb-6">
+              <div className="relative bg-background rounded-xl flex-1 min-h-0 w-full overflow-hidden flex items-center justify-center md:hidden">
                 <Image
                   src={currentImage ?? ''}
                   alt={`${currentStep.label} 插圖`}
@@ -122,7 +122,7 @@ export default function IntroPage() {
 
           <div className={cn(
             'text-sm text-black/80 leading-relaxed whitespace-pre-line flex-1 overflow-y-auto pr-1',
-            hasStepImage && 'hidden md:block [@media(max-height:580px)]:block',
+            hasStepImage && 'hidden md:block',
           )}>
             {currentContent.split('**').map((part, i) =>
               i % 2 === 1
