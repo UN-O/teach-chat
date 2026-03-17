@@ -148,6 +148,9 @@ export default function ScenarioIntroPage() {
         >
           開始練習 →
         </button>
+        <p className="text-center text-xs text-muted mt-3">
+          建議使用電腦版取得最佳體驗
+        </p>
         </div>
       </div>
     </main>
