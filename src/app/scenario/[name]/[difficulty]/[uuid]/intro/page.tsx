@@ -52,8 +52,8 @@ export default function IntroPage() {
   }
 
   return (
-    <main className="h-svh overflow-y-auto bg-background flex flex-col items-center px-6 py-4 md:py-16 md:justify-center">
-      <div className="w-full max-w-lg flex flex-col flex-1 md:flex-none">
+    <main className="h-svh bg-background flex flex-col items-center px-6 py-4 [@media(max-height:580px)]:py-1 md:py-16 md:justify-center">
+      <div className="w-full max-w-lg flex flex-col flex-1 min-h-0 md:flex-none">
         {/* Progress dots */}
         <div className="flex gap-2 justify-center mb-2 md:mb-10">
           {steps.map((_, i) => (
@@ -68,13 +68,13 @@ export default function IntroPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-md p-8 md:p-10 flex-1 min-h-0 md:flex-none md:min-h-[680px] md:max-h-[760px] flex flex-col">
-          <h2 className="font-[var(--font-chiron)] text-xl font-bold text-black mb-5">
+        <div className="bg-white rounded-2xl shadow-md p-8 [@media(max-height:580px)]:p-4 md:p-10 flex-1 min-h-0 md:flex-none md:min-h-[680px] md:max-h-[760px] flex flex-col">
+          <h2 className="font-[var(--font-chiron)] text-xl font-bold text-black mb-5 [@media(max-height:580px)]:mb-2">
             {currentStep.label}
           </h2>
 
           {hasStepImage && (
-            <div className="mb-4 md:mb-6">
+            <div className="mb-4 md:mb-6 [@media(max-height:580px)]:hidden">
               <div className="relative bg-background rounded-xl aspect-[4/5] w-full overflow-hidden flex items-center justify-center md:hidden">
                 <Image
                   src={currentImage ?? ''}
@@ -122,7 +122,7 @@ export default function IntroPage() {
 
           <div className={cn(
             'text-sm text-black/80 leading-relaxed whitespace-pre-line flex-1 overflow-y-auto pr-1',
-            hasStepImage && 'hidden md:block',
+            hasStepImage && 'hidden md:block [@media(max-height:580px)]:block',
           )}>
             {currentContent.split('**').map((part, i) =>
               i % 2 === 1
@@ -131,7 +131,7 @@ export default function IntroPage() {
             )}
           </div>
 
-          <div className="flex items-center justify-between pt-4 mt-auto">
+          <div className="flex items-center justify-between pt-4 [@media(max-height:580px)]:pt-2 mt-auto">
             {step > 0 ? (
               <button
                 onClick={() => {
