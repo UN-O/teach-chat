@@ -920,7 +920,7 @@ export default function ChatPage() {
         )}
 
         {/* Messages */}
-        <div className={cn('flex-1 px-4 py-4 space-y-1 overflow-x-hidden', isMessagesEmpty && !isLoading ? 'overflow-y-hidden' : 'overflow-y-auto')}>
+        <div className={cn('flex-1 px-4 py-4 space-y-1', isMessagesEmpty && !isLoading ? 'overflow-y-hidden' : 'overflow-y-auto')}>
           {isMessagesEmpty && (
             <div className="flex items-center justify-center h-full">
               <p className="text-sm text-muted text-center">

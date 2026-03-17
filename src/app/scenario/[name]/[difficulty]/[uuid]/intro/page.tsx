@@ -52,8 +52,8 @@ export default function IntroPage() {
   }
 
   return (
-    <main className="min-h-svh bg-background flex items-center justify-center px-6 py-0 md:py-16">
-      <div className="w-full max-w-lg">
+    <main className="h-svh overflow-y-auto bg-background flex flex-col items-center px-6 py-4 md:py-16 md:justify-center">
+      <div className="w-full max-w-lg flex flex-col flex-1 md:flex-none">
         {/* Progress dots */}
         <div className="flex gap-2 justify-center mb-2 md:mb-10">
           {steps.map((_, i) => (
@@ -68,7 +68,7 @@ export default function IntroPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-md p-8 md:p-10 h-[calc(100svh-8rem)] max-h-[760px] min-h-[620px] md:min-h-[680px] flex flex-col">
+        <div className="bg-white rounded-2xl shadow-md p-8 md:p-10 flex-1 min-h-0 md:flex-none md:min-h-[680px] md:max-h-[760px] flex flex-col">
           <h2 className="font-[var(--font-chiron)] text-xl font-bold text-black mb-5">
             {currentStep.label}
           </h2>
