@@ -13,9 +13,6 @@ export function VideoSection() {
                         <H2 size="lg" className="text-[1.8rem] sm:text-3xl md:text-4xl text-primary">
                             {homeText.video.h2}
                         </H2>
-                        <p className="font-body text-base leading-[1.7] text-primary/80 max-w-[55ch] mx-auto">
-                            {homeText.video.body}
-                        </p>
                     </div>
                     <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg">
                         <iframe
