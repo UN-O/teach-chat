@@ -210,7 +210,7 @@ export const aboutText = {
     },
     {
       name: "小柯",
-      role: "智慧社區產品經理",
+      role: "智慧社區產品設計",
       desc: "清大英語教育系",
     },
     {
