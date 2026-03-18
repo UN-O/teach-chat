@@ -58,6 +58,11 @@ export const homeText = {
       ] as const,
     },
   },
+  video: {
+    eyebrow: "How It Works",
+    h2: "三分鐘看懂怎麼用",
+    body: "看完這支影片，你就知道如何用這個模擬器練出面對家長訊息的底氣。",
+  },
   intro: {
     eyebrow: "What You Get",
     h2: "一個模擬器，四個核心體驗",

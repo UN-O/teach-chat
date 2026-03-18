@@ -1,5 +1,6 @@
 import { HeroSection } from "@/components/home/HeroSection";
 import { HookSection } from "@/components/home/HookSection";
+import { VideoSection } from "@/components/home/VideoSection";
 import { IntroSection } from "@/components/home/IntroSection";
 import { OriginSection } from "@/components/home/OriginSection";
 import { ContactSection } from "@/components/home/ContactSection";
@@ -10,6 +11,7 @@ export default function HomePage() {
       <HeroSection />
       <div className="[&>section]:px-6 [&>section]:md:px-16">
         <HookSection />
+        <VideoSection />
         <IntroSection />
         <OriginSection />
         <ContactSection />
