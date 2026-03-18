@@ -58,6 +58,10 @@ export const homeText = {
       ] as const,
     },
   },
+  video: {
+    eyebrow: "Intro Video",
+    h2: "三分鐘快速上手",
+  },
   intro: {
     eyebrow: "What You Get",
     h2: "一個模擬器，四個核心體驗",
